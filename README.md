@@ -13,6 +13,9 @@
 ```
 backend/
 ├── main.py              # 入口，交互式菜单
+├── config/              # 配置
+│   ├── settings.py      # 模型、路径等集中配置
+│   └── prompts.py       # 系统提示词
 ├── ingestion/           # 文档导入
 │   ├── loader.py        # 加载 .md 文件
 │   ├── splitter.py      # 文本分块
@@ -28,33 +31,36 @@ backend/
 └── memory/              # 对话记忆持久化
 ```
 
-## 架构图
+## 数据流
+
 ```
-Markdown
-   |
-Loader
-   |
-Splitter
-   |
-Embedding
-   |
-FAISS
-   |
-Retriever Tool
-   |
-Agent
-   |
-LLM
-   |
-SQLite Memory
+Markdown 文件
+     |
+  Loader(加载)
+     |
+  Splitter(分块)
+     |
+  Embedding(向量化)
+     |
+  FAISS(存储/检索)
+     |
+  Retriever Tool(检索工具)
+     |
+   Agent（调度）
+     |
+     ├── Retriever Tool → FAISS
+     |
+     ├── LLM（生成回答）
+     |
+     └── SQLite Checkpoint（状态持久化）
 ```
 
 ## 技术栈
 
-- **框架**: LangChain + LangGraph(SQLite)
+- **框架**:LangChain + LangGraph
 - **Embedding**: BGE-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
-- **LLM**: 通过 OpenAI 兼容 API 调用
+- **LLM**: LangChain ChatModel（支持 OpenAI Compatible API）
 - **记忆**: SQLite (LangGraph Checkpoint)
 
 ## 使用
@@ -63,33 +69,23 @@ SQLite Memory
 # 安装依赖
 pip install -r requirements.txt
 
-# 完成embedding的路径配置
-# 见main.py
-
-# 完成model的配置
-# 见main.py
+# 修改 config/settings_init.py 中的嵌入(embedding)模型路径和 LLM 配置
 
 # 运行
 python backend/main.py
 ```
 
 按提示选择：1 导入文档 / 2 查询知识库 / 3 删除数据库。
+将 Markdown .md文件放入 document/ 目录后运行导入流程。
 
-
-也可以进入小模块运行测试
 ## 环境
 
 依赖见 `requirements.txt`。
 
+## 特点
 
-## Roadmap
-
-- [x] Markdown RAG
-- [x] FAISS persistence
-- [x] SQLite conversation memory
-
-- [ ] FastAPI interface
-- [ ] Reranker
-- [ ] Multi knowledge base
-- [ ] LangGraph workflow
-- [ ] Docker deployment
+- 支持本地 Embedding 模型
+- FAISS 本地向量检索
+- 检索结果保留文档来源信息
+- 使用 Agent Tool 动态调用知识库
+- SQLite 持久化保存对话状态
