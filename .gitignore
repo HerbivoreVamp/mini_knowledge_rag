@@ -13,7 +13,8 @@ env/
 *.db
 *.sqlite
 *.sqlite3
-database/vanilla/   # FAISS 索引文件（可能很大）
+*.faiss
+*.pkl
 
 # 环境变量
 .env
