@@ -28,12 +28,33 @@ backend/
 └── memory/              # 对话记忆持久化
 ```
 
+## 架构图
+```
+Markdown
+   |
+Loader
+   |
+Splitter
+   |
+Embedding
+   |
+FAISS
+   |
+Retriever Tool
+   |
+Agent
+   |
+LLM
+   |
+SQLite Memory
+```
+
 ## 技术栈
 
-- **框架**: LangChain + LangGraph
+- **框架**: LangChain + LangGraph(SQLite)
 - **Embedding**: BGE-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
-- **LLM**: 通过 OpenAI 兼容 API 调用（默认 qwen3-8b）
+- **LLM**: 通过 OpenAI 兼容 API 调用
 - **记忆**: SQLite (LangGraph Checkpoint)
 
 ## 使用
@@ -42,12 +63,33 @@ backend/
 # 安装依赖
 pip install -r requirements.txt
 
+# 完成embedding的路径配置
+# 见main.py
+
+# 完成model的配置
+# 见main.py
+
 # 运行
 python backend/main.py
 ```
 
 按提示选择：1 导入文档 / 2 查询知识库 / 3 删除数据库。
 
+
+也可以进入小模块运行测试
 ## 环境
 
-Conda 环境 `langchain_learning`，依赖见 `requirements.txt`。
+依赖见 `requirements.txt`。
+
+
+## Roadmap
+
+- [x] Markdown RAG
+- [x] FAISS persistence
+- [x] SQLite conversation memory
+
+- [ ] FastAPI interface
+- [ ] Reranker
+- [ ] Multi knowledge base
+- [ ] LangGraph workflow
+- [ ] Docker deployment
