@@ -3,12 +3,14 @@
 from pathlib import Path
 from langchain_community.vectorstores import FAISS
 
-
+from utils.logger import logger
 def build_vectorstore(docs, embedding):
-    return FAISS.from_documents(
+    vectorstore = FAISS.from_documents(
         documents=docs,
         embedding=embedding
     )
+    logger.info(f'向量库建造成功 len(docs)={len(docs)}')
+    return vectorstore
 
 
 def save_vectorstore(vector_store, save_dir, index_name):
@@ -18,17 +20,20 @@ def save_vectorstore(vector_store, save_dir, index_name):
         folder_path=str(path),
         index_name=index_name
     )
+    logger.info(f"向量库保存至{str(path)}")
+    return True
 
 
 def load_vectorstore(load_dir, embedding, index_name):
     path = Path(load_dir) / index_name
-
-    return FAISS.load_local(
+    vectorstore = FAISS.load_local(
         folder_path=str(path),
         embeddings=embedding,
         index_name=index_name,
         allow_dangerous_deserialization=True
     )
+    logger.info(f"向量库载入成功 path={str(path)}")
+    return vectorstore
 
 
 if __name__ == '__main__':  #创建一个索引集

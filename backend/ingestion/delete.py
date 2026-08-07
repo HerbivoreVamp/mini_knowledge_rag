@@ -1,6 +1,7 @@
 # 删除向量库
 import shutil
 from pathlib import Path
+from utils.logger import logger
 
 
 def delete_vectorstore(delete_dir: str, index_name: str) -> bool:
@@ -8,10 +9,10 @@ def delete_vectorstore(delete_dir: str, index_name: str) -> bool:
     path = Path(delete_dir) / index_name
     if path.exists():
         shutil.rmtree(str(path))
-        print(f"向量库 {index_name} 已删除")
+        logger.info(f"向量库删除成功 路径{path}")
         return True
     else:
-        print(f"向量库 {index_name} 不存在，无需删除")
+        logger.info(f"向量库删除失败 向量库 {index_name} 不存在")
         return False
 
 

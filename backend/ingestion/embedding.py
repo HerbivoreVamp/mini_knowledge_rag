@@ -3,11 +3,14 @@
 from pathlib import Path
 from langchain_huggingface import HuggingFaceEmbeddings
 
+from utils.logger import logger
+
 
 def embeddings(dir_path, model_name):
     emb = HuggingFaceEmbeddings(
         model_name=str(Path(dir_path) / model_name)
     )
+    logger.info(f"嵌入模型加载成功 model_name={model_name}")
     return emb
 
 

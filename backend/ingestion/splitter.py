@@ -1,6 +1,7 @@
 # 递归文本分块
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from utils.logger import logger
 
 
 def split_text(docs, chunk_size=800, chunk_overlap=100, add_start_index=True, preview=False):
@@ -18,6 +19,7 @@ def split_text(docs, chunk_size=800, chunk_overlap=100, add_start_index=True, pr
         add_start_index=add_start_index,
     )
     splits = text_splitter.split_documents(docs)
+    logger.info(f"文本切分完成 len(splits)={len(splits)}")
     if preview:
         for i, s in enumerate(splits[:]):
             print(f"\n--- 第 {i + 1} 块 ---")

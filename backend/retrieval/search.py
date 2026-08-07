@@ -2,14 +2,14 @@
 
 from langchain.tools import tool
 
-
+from utils.logger import logger
 def create_retrieve_tool(vector_store):
     @tool(response_format="content_and_artifact")
     def retrieve_context(query: str):
         """检索知识库回答问题"""
-
+        logger.info("模型调用retrieve_context工具")
         docs = vector_store.similarity_search(query, k=5)
-
+        logger.info("工具返回搜索结果")
         serialized = "\n\n".join(
             f"Content: {d.page_content}"
             for d in docs

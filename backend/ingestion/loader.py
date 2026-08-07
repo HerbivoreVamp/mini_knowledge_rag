@@ -4,6 +4,7 @@ from pathlib import Path
 from functools import partial
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 
+from utils.logger import logger
 
 def load_all_md(
         dir_path: str,
@@ -15,7 +16,8 @@ def load_all_md(
     path = Path(dir_path)
 
     if not path.exists():
-        raise FileNotFoundError(dir_path)
+        logger.warning(f'加载路径不存在 path={path}')
+        return None
 
     loader = DirectoryLoader(
         str(path),
@@ -35,7 +37,7 @@ def load_all_md(
             "source": file_path,
             "file_type": "markdown"
         })
-
+    logger.info(f"文件导入成功 path={path}")
     if preview:
         print(f"加载文件数量: {len(docs)}")
 
@@ -53,7 +55,8 @@ def load_md(file_path: str):
     path = Path(file_path)
 
     if not path.exists():
-        raise FileNotFoundError(file_path)
+        logger.warning(f'加载路径失败 {path}不存在')
+        return None
 
     loader = TextLoader(str(path), encoding="utf-8")
     docs = loader.load()
@@ -63,7 +66,7 @@ def load_md(file_path: str):
             "source": file_path,
             "file_type": "markdown"
         })
-
+    logger.info(f"文件导入成功 path={path}")
     return docs
 
 

@@ -1,10 +1,8 @@
 # 配置相关
-
-
 from dataclasses import dataclass
 from pathlib import Path
 
-
+from utils.logger import logger
 @dataclass
 class Settings:
     base_dir: Path
@@ -20,11 +18,11 @@ class Settings:
 
     emb_dir_path: str
     emb_model_name: str
-
+    config: dict
 
 def get_settings():
     base = Path(__file__).resolve().parent.parent
-
+    logger.info("配置加载成功")
     return Settings(
         base_dir=base,
         database_dir=base / "database",
@@ -39,6 +37,6 @@ def get_settings():
 
         emb_dir_path=r"D:\home\models\BAAI",
         emb_model_name=r"bge-small-zh-v1.5",
-
+        config={"configurable": {"thread_id": "user0"}}
     )
 
