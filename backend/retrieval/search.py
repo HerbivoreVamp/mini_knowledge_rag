@@ -29,7 +29,13 @@ def create_retrieve_tool(vector_store):
             )
             logger.info(f"retrieve_context返回结果数量={len(docs)}")
             serialized = "\n\n".join(
-                f"Content: {d.page_content}"
+                f"""
+            来源:
+            {d.metadata.get("source")}
+
+            内容:
+            {d.page_content}
+            """
                 for d in docs
             )
             return serialized, docs
@@ -40,6 +46,7 @@ def create_retrieve_tool(vector_store):
             return f"检索工具执行失败：{str(e)}。""请尝试其他方式回答用户。", []
 
     return retrieve_context
+
 
 if __name__ == '__main__':
     import sys
