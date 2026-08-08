@@ -19,6 +19,7 @@ backend/
 │   └── prompts.py           # Prompt 模板
 │
 ├── utils/                   # 通用工具
+│   ├── exceptions.py        # 统一异常定义
 │   └── logger.py            # 日志配置
 │
 ├── ingestion/               # 文档处理流程
@@ -110,6 +111,7 @@ python backend/main.py
 - 检索结果保留文档来源信息
 - 使用 Agent Tool 动态调用知识库
 - SQLite 持久化保存对话状态
+- 统一异常处理（RAGError 异常体系）
 - 完整日志记录
 
 ## Logging
@@ -128,7 +130,7 @@ python backend/main.py
 ## 下一步工作 
 - [x] 配置系统重构
 - [x] 日志系统完善
-- [ ] 统一异常处理（error handling）
+- [x] 统一异常处理（error handling）
 - [ ] 封装 ingestion/retrieval/generation 模块
 - [ ] 优化项目目录结构
 - [ ] 增加 pytest 单元测试

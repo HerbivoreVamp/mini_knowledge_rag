@@ -3,26 +3,48 @@
 from langchain.tools import tool
 
 from utils.logger import logger
+from utils.exceptions import RetrievalError
+
+
 def create_retrieve_tool(vector_store):
+    if vector_store is None:
+        raise RetrievalError(
+            "vector_store不能为空"
+        )
+
     @tool(response_format="content_and_artifact")
     def retrieve_context(query: str):
         """检索知识库回答问题"""
-        logger.info("模型调用retrieve_context工具")
-        docs = vector_store.similarity_search(query, k=5)
-        logger.info("工具返回搜索结果")
-        serialized = "\n\n".join(
-            f"Content: {d.page_content}"
-            for d in docs
-        )
+        try:
+            logger.info(
+                "模型调用retrieve_context工具 query=%s",
+                query
+            )
+            if not query.strip():
+                logger.debug("retrieve_context收到空query")
+                return "检索工具调用失败：query为空。请重新生成有效检索关键词。", []
+            docs = vector_store.similarity_search(
+                query,
+                k=5
+            )
+            logger.info(f"retrieve_context返回结果数量={len(docs)}")
+            serialized = "\n\n".join(
+                f"Content: {d.page_content}"
+                for d in docs
+            )
+            return serialized, docs
 
-        return serialized, docs
+        except Exception as e:
+
+            logger.exception("retrieve_context工具执行失败")
+            return f"检索工具执行失败：{str(e)}。""请尝试其他方式回答用户。", []
 
     return retrieve_context
-
 
 if __name__ == '__main__':
     import sys
     from pathlib import Path
+
     # backend目录加入搜索路径
     sys.path.append(
         str(Path(__file__).resolve().parent.parent)
@@ -35,7 +57,7 @@ if __name__ == '__main__':
     from langchain.agents import create_agent
 
     emb = embeddings(r"D:\home\models\BAAI", r"bge-small-zh-v1.5")
-    vectorstore = load_vectorstore(load_dir=r"D:\dump\my_project\mini_knowledge_rag\backend\database", # 导入测试
+    vectorstore = load_vectorstore(load_dir=r"D:\dump\my_project\mini_knowledge_rag\backend\database",  # 导入测试
                                    embedding=emb,
                                    index_name="langchain_doc")
 
