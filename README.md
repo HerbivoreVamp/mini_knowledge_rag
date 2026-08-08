@@ -126,10 +126,14 @@ python backend/main.py
 日志默认输出到控制台（或 logs 文件夹）。
 
 ## 下一步工作 
-- [x] 配置重构
-- [x] 日志系统
-- [ ] 异常处理（统一 error handling）
-- [ ] 把 ingestion/retrieval/generation 封装成 service/class
-- [ ] 加 pytest 测试
-- [ ] 做 evaluation（RAGAS 或自己的评测）
-- [ ] 再进入 Agent workflow
+- [x] 配置系统重构
+- [x] 日志系统完善
+- [ ] 统一异常处理（error handling）
+- [ ] 封装 ingestion/retrieval/generation 模块
+- [ ] 优化项目目录结构
+- [ ] 增加 pytest 单元测试
+- [ ] 增加基础 evaluation 流程
+  - [ ] RAGAS 评测
+  - [ ] 自定义检索准确率测试
+- [ ] 完善 README 和项目文档
+- [ ] Docker 化部署（可选）

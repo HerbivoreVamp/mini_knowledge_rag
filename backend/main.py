@@ -12,7 +12,7 @@ from retrieval.vectorstore_manage import load_vectorstore, save_vectorstore, bui
 from retrieval.search import create_retrieve_tool
 from generation.chat import chat_generation
 from utils.logger import setup_logger
-
+from utils.exceptions import RAGError,LoaderError,EmbeddingError,RetrievalError
 logger = setup_logger()
 logger.info("程序启动")
 # --- 配置加载 ---
@@ -69,9 +69,11 @@ with SqliteSaver.from_conn_string(str(settings.memory_dir / "checkpoints.db")) a
             print("功能1: 导入文档")
             folder = input("请输入文档文件夹名称:\n")
             doc_dir = settings.document_dir / folder
-            docs = load_all_md(str(doc_dir))
-            if docs is None:
-                print(f"错误输入，文件夹 {doc_dir} 不存在")
+            try:
+                docs = load_all_md(str(doc_dir))
+            except RAGError as e:
+                logger.error(e)
+                print(e)
                 continue
             splits = split_text(docs)
             vectorstore = build_vectorstore(splits, emb)
