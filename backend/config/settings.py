@@ -1,8 +1,11 @@
 # 配置相关
+import os
+from dotenv import load_dotenv
 from dataclasses import dataclass
 from pathlib import Path
 
 from utils.logger import logger
+
 @dataclass
 class Settings:
     base_dir: Path
@@ -21,6 +24,7 @@ class Settings:
     config: dict
 
 def get_settings():
+    load_dotenv()
     base = Path(__file__).resolve().parent.parent
     logger.info("配置加载成功")
     return Settings(
@@ -30,13 +34,13 @@ def get_settings():
         document_dir=base / "document",
         index_name="vanilla",
 
-        model="qwen/qwen3-8b",  # 这是作者自己部署的模型
-        model_provider="openai",
-        base_url=r"http://localhost:1234/v1",
-        api_key="1234",
+        model=os.getenv("MODEL"),
+        api_key=os.getenv("API_KEY"),
+        model_provider=os.getenv("MODEL_PROVIDER"),
+        base_url=os.getenv("BASE_URL"),
 
-        emb_dir_path=r"D:\home\models\BAAI",
-        emb_model_name=r"bge-small-zh-v1.5",
+        emb_dir_path=os.getenv("EMB_DIR_PATH"),
+        emb_model_name=os.getenv("EMB_MODEL_NAME"),
         config={"configurable": {"thread_id": "user0"}}
     )
 
