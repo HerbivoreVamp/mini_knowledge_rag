@@ -21,5 +21,5 @@ def chat_generation(agent, input_message, config):
             "模型文本生成失败"
         )
         raise GenerationError(
-            "模型文本生成失败"
+            f"模型文本生成失败{e}"
         ) from e

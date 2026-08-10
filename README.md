@@ -16,24 +16,30 @@ backend/
 │
 ├── config/                  # 项目配置
 │   ├── settings.py          # 模型、路径等配置
+│   ├── model.py             # 模型工厂（Embedding + LLM）
 │   └── prompts.py           # Prompt 模板
 │
 ├── utils/                   # 通用工具
 │   ├── exceptions.py        # 统一异常定义
 │   └── logger.py            # 日志配置
 │
-├── ingestion/               # 文档处理流程
+├── ingestion/               # 文档导入模块
+│   ├── service.py           # 导入流程编排（load → split → embed → save）
 │   ├── loader.py            # Markdown 文档加载
-│   ├── splitter.py          # 文本切分
-│   └── embedding.py         # 文档向量化
+│   └── splitter.py          # 文本切分
+│
+├── knowledge_manage/        # 知识库管理
+│   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
 ├── retrieval/               # 检索模块
-│   ├── vectorstore_manage.py # FAISS 向量库管理
-│   ├── search.py            # 检索工具封装
-│   └── delete.py            # 向量库删除
+│   └── search.py            # 检索工具封装
 │
-├── generation/              # 生成模块
-│   └── chat.py              # Agent 对话封装
+├── agent/                   # Agent 模块
+│   └── agent.py             # RAG Agent 创建
+│
+├── generation/              # 生成流程
+│   ├── service.py           # 生成服务封装
+│   └── chat.py              # 对话生成
 │
 ├── database/                # FAISS 向量库存储
 ├── document/                # Markdown 知识文档
@@ -48,13 +54,15 @@ backend/
 ```
 Markdown 文件
   │
-Loader（文档加载）
+Loader
   │
-Splitter（文本切分）
+Splitter
   │
-Embedding（向量化）
+Embedding
   │
-FAISS（向量存储）
+Vectorstore Manager
+  │
+FAISS
 ```
 
 **查询问答**
@@ -80,7 +88,7 @@ Answer
 ## 技术栈
 
 - **框架**:LangChain + LangGraph
-- **Embedding**: BGE-small-zh-v1.5 (HuggingFace)
+- **Embedding**: BAAI/bge-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
 - **LLM**: LangChain ChatModel（支持 OpenAI Compatible API）
 - **记忆**: SQLite (LangGraph Checkpoint)
@@ -91,7 +99,8 @@ Answer
 # 安装依赖
 pip install -r requirements.txt
 
-# 修改 config/settings.py 中的 embedding 模型路径和 LLM 配置
+# 配置 .env 文件中的 embedding 模型路径和 LLM 参数
+# 如果想调整读取文档的位置 可以配置config.settings的内容
 
 # 运行
 python backend/main.py
@@ -131,7 +140,7 @@ python backend/main.py
 - [x] 配置系统重构
 - [x] 日志系统完善
 - [x] 统一异常处理（error handling）
-- [ ] 封装 ingestion/retrieval/generation 模块
+- [x] 封装 ingestion/retrieval/generation 模块
 - [ ] 优化项目目录结构
 - [ ] 增加 pytest 单元测试
 - [ ] 增加基础 evaluation 流程

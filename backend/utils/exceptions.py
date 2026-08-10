@@ -17,21 +17,30 @@ class RetrievalError(RAGError):
 class SplitError(RAGError):
     pass
 
+
 class VectorStoreError(RAGError):
     pass
+
+
 class VectorStoreLoadError(RAGError):
     pass
+
+
 class VectorStoreNotFoundError(RAGError):
     pass
+
+
+class VectorStoreDeleteError(RAGError):
+    pass
+
 
 class GenerationError(RAGError):
     pass
 
+
 class AgentError(RAGError):
     pass
 
-class DeletionError(RAGError):
+
+class LLMError(RAGError):
     pass
-
-
-

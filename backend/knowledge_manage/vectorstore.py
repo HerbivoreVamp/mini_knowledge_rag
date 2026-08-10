@@ -1,10 +1,11 @@
 # FAISS 构建/保存/加载
-
+import shutil
 from pathlib import Path
 from langchain_community.vectorstores import FAISS
 
 from utils.logger import logger
-from utils.exceptions import VectorStoreLoadError,VectorStoreNotFoundError,VectorStoreError
+from utils.exceptions import VectorStoreLoadError, VectorStoreNotFoundError, VectorStoreError, VectorStoreDeleteError
+
 
 def build_vectorstore(docs, embedding):
     if not docs:
@@ -37,7 +38,6 @@ def build_vectorstore(docs, embedding):
 
 
 def save_vectorstore(vector_store, save_dir, index_name):
-
     if vector_store is None:
         raise VectorStoreError(
             "vectorstore不能为空"
@@ -100,28 +100,23 @@ def load_vectorstore(load_dir, embedding, index_name):
         ) from e
 
 
-if __name__ == '__main__':  #创建一个索引集
-    import sys
+def delete_vectorstore(delete_dir: str, index_name: str):
+    """删除指定名称的向量库文件夹"""
 
-    # backend目录加入搜索路径
-    sys.path.append(
-        str(Path(__file__).resolve().parent.parent)
-    )
+    path = Path(delete_dir) / index_name
 
-    from ingestion.embedding import embeddings
-    from ingestion.loader import load_all_md
-    from ingestion.splitter import split_text
+    try:
+        if not path.exists():
+            raise VectorStoreNotFoundError(
+                f"向量库不存在 path={path}"
+            )
 
-    # docs = load_all_md(
-    #     r"D:\dump\my_project\mini_knowledge_rag\backend\document\langchain_doc")
-    emb = embeddings(r"D:\home\models\BAAI", r"bge-small-zh-v1.5")
-    # splits = split_text(docs)
-    # vectorstore = build_vectorstore(docs, emb)
-    #
-    # save_vectorstore(vectorstore,
-    #                  save_dir=r"D:\dump\my_project\mini_knowledge_rag\backend\database",
-    #                  index_name="langchain_doc")
+        shutil.rmtree(path)
 
-    vectorstore = load_vectorstore(load_dir=r"D:\dump\my_project\mini_knowledge_rag\backend\database", # 导入测试
-                                   embedding=emb,
-                                   index_name="langchain_doc")
+        logger.info(
+            f"向量库删除成功 path={path}"
+        )
+
+    except Exception as e:
+        logger.exception(f"删除失败 path={path}")
+        raise VectorStoreDeleteError(f"删除出错 path={path}") from e

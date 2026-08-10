@@ -8,6 +8,7 @@ from utils.exceptions import AgentError
 def create_rag_agent(llm, system_prompt, vectorstore, checkpointer):
     """创建RAG Agent"""
     if vectorstore is None:
+        logger.error("vectorstore不存在")
         raise AgentError(
             "vectorstore不能为空"
         )
