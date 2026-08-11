@@ -47,6 +47,10 @@ backend/
 │   └── memory/              # LangGraph 对话状态持久化
 │
 └── logs/                    # 运行日志
+
+tests/
+├── test_xxx                 # 各类单元测试
+└── ......
 ```
 
 ## 数据流
@@ -106,6 +110,9 @@ pip install -r requirements.txt
 
 # 运行
 python backend/main.py
+
+# 运行测试
+pytest
 ```
 
 按提示选择：1 导入文档 / 2 查询知识库 / 3 删除数据库。
@@ -144,7 +151,7 @@ python backend/main.py
 - [x] 统一异常处理（error handling）
 - [x] 封装 ingestion/retrieval/generation 模块
 - [x] 优化项目目录结构
-- [ ] 增加 pytest 单元测试
+- [x] 增加 pytest 单元测试
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测
   - [ ] 自定义检索准确率测试

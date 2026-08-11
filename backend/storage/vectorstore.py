@@ -2,6 +2,7 @@
 import shutil
 from pathlib import Path
 from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
 
 from core.logger import logger
 from core.exceptions import VectorStoreLoadError, VectorStoreNotFoundError, VectorStoreError, VectorStoreDeleteError
@@ -12,7 +13,10 @@ def build_vectorstore(docs, embedding):
         raise VectorStoreError(
             "没有文档，无法创建向量库"
         )
-
+    if not isinstance(docs[0], Document):
+        raise VectorStoreError(
+            "docs必须是由Document组成的的列表[Document,...]"
+        )
     if embedding is None:
         raise VectorStoreError(
             "embedding模型不能为空"
@@ -37,21 +41,23 @@ def build_vectorstore(docs, embedding):
         ) from e
 
 
-def save_vectorstore(vector_store, save_dir, index_name):
-    if vector_store is None:
+def save_vectorstore(vectorstore, save_dir, index_name):
+    if vectorstore is None:
         raise VectorStoreError(
-            "vectorstore不能为空"
+            "vectorstore不能为None"
         )
-
-    if not index_name:
+    if not isinstance(save_dir, str):
         raise VectorStoreError(
-            "index_name不能为空"
+            "save_dir必须是字符串str"
         )
-
+    if not isinstance(index_name, str):
+        raise VectorStoreError(
+            "index_name必须是字符串str"
+        )
     path = Path(save_dir) / index_name
 
     try:
-        vector_store.save_local(
+        vectorstore.save_local(
             folder_path=str(path),
             index_name=index_name
         )
@@ -59,7 +65,7 @@ def save_vectorstore(vector_store, save_dir, index_name):
         logger.info(
             f"向量库保存成功 path={path}"
         )
-
+        return path
     except Exception as e:
         logger.exception(
             f"向量库保存失败 path={path}"

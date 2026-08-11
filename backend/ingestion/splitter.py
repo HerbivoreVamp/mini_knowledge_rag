@@ -1,6 +1,6 @@
 # 递归文本分块
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-
+from langchain_core.documents import Document
 from core.logger import logger
 from core.exceptions import SplitError
 
@@ -14,7 +14,7 @@ def split_text(
 ):
     """
     文档切分
-    :param docs: 由Document组成的的列表
+    :param docs: 由Document组成的的列表[Document,...]
     :param chunk_size: 分块大小
     :param chunk_overlap: 重叠大小
     :param add_start_index: 记录文本开始的序号
@@ -32,7 +32,10 @@ def split_text(
         raise SplitError(
             "chunk_overlap必须>=0且小于chunk_size"
         )
-
+    if not isinstance(docs[0],Document):
+        raise SplitError(
+            "docs必须是由Document组成的的列表[Document,...]"
+        )
     try:
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,

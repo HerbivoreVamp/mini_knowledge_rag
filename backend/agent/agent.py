@@ -21,7 +21,6 @@ def create_rag_agent(llm, system_prompt, vectorstore, checkpointer):
             checkpointer=checkpointer
         )
 
-
         logger.info("Agent创建成功")
 
         return agent

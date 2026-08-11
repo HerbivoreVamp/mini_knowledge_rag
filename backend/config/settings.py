@@ -6,6 +6,7 @@ from pathlib import Path
 
 from core.logger import logger
 
+
 @dataclass
 class Settings:
     base_dir: Path
@@ -22,6 +23,7 @@ class Settings:
     emb_dir_path: str
     emb_model_name: str
     config: dict
+
 
 def get_settings():
     load_dotenv()
@@ -43,4 +45,3 @@ def get_settings():
         emb_model_name=os.getenv("EMB_MODEL_NAME"),
         config={"configurable": {"thread_id": "user0"}}
     )
-

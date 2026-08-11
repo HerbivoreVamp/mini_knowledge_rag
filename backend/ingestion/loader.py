@@ -8,7 +8,7 @@ from core.logger import logger
 from core.exceptions import LoaderError
 
 
-def load_all_md(
+def load_md(
         dir_path: str,
         show_progress: bool = False,
         preview: bool = False,
@@ -87,11 +87,3 @@ def load_all_md(
         print("来源:", doc.metadata.get("source"))
         print(doc.page_content[:800])
     return valid_docs
-
-
-if __name__ == "__main__":
-    docs = load_all_md(
-        r"D:\dump\my_project\mini_knowledge_rag\backend\document\langchain_doc",
-        show_progress=True,
-        preview=True
-    )
