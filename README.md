@@ -17,9 +17,10 @@ backend/
 ├── config/                  # 项目配置
 │   ├── settings.py          # 模型、路径等配置
 │   ├── model.py             # 模型工厂（Embedding + LLM）
-│   └── prompts.py           # Prompt 模板
+│   ├── prompts.py           # Prompt 模板
+│   └── embedding.py         # Embedding 模型配置
 │
-├── utils/                   # 通用工具
+├── core/                    # 核心模块
 │   ├── exceptions.py        # 统一异常定义
 │   └── logger.py            # 日志配置
 │
@@ -28,7 +29,7 @@ backend/
 │   ├── loader.py            # Markdown 文档加载
 │   └── splitter.py          # 文本切分
 │
-├── knowledge_manage/        # 知识库管理
+├── storage/                 # 存储模块
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
 ├── retrieval/               # 检索模块
@@ -37,13 +38,14 @@ backend/
 ├── agent/                   # Agent 模块
 │   └── agent.py             # RAG Agent 创建
 │
-├── generation/              # 生成流程
+├── application/             # 应用层
 │   ├── service.py           # 生成服务封装
 │   └── chat.py              # 对话生成
 │
-├── database/                # FAISS 向量库存储
-├── document/                # Markdown 知识文档
-├── memory/                  # LangGraph 对话状态持久化
+├── data/                    # 数据目录
+│   ├── document/            # Markdown 知识文档
+│   └── memory/              # LangGraph 对话状态持久化
+│
 └── logs/                    # 运行日志
 ```
 
@@ -107,7 +109,7 @@ python backend/main.py
 ```
 
 按提示选择：1 导入文档 / 2 查询知识库 / 3 删除数据库。
-将 Markdown .md文件放入 document/ 目录后运行导入流程。
+将 Markdown .md文件放入 data/document/ 目录后运行导入流程。
 
 ## 环境
 
@@ -141,7 +143,7 @@ python backend/main.py
 - [x] 日志系统完善
 - [x] 统一异常处理（error handling）
 - [x] 封装 ingestion/retrieval/generation 模块
-- [ ] 优化项目目录结构
+- [x] 优化项目目录结构
 - [ ] 增加 pytest 单元测试
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测

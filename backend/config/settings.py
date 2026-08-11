@@ -29,9 +29,9 @@ def get_settings():
     logger.info("配置加载成功")
     return Settings(
         base_dir=base,
-        database_dir=base / "database",
-        memory_dir=base / "memory",
-        document_dir=base / "document",
+        database_dir=base / "data" / "database",
+        memory_dir=base / "data" / "memory",
+        document_dir=base / "data" / "document",
         index_name="vanilla",
 
         model=os.getenv("MODEL"),
