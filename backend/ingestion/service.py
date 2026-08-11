@@ -1,6 +1,6 @@
 from .loader import load_all_md
 from .splitter import split_text
-from utils.exceptions import RAGError
+from core.exceptions import RAGError
 from knowledge_manage.vectorstore import save_vectorstore, build_vectorstore
 
 

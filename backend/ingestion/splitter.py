@@ -1,10 +1,8 @@
 # 递归文本分块
-
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_core.documents import Document
 
-from utils.logger import logger
-from utils.exceptions import SplitError
+from core.logger import logger
+from core.exceptions import SplitError
 
 
 def split_text(

@@ -1,7 +1,7 @@
 from langchain.chat_models import init_chat_model
 
-from utils.logger import logger
-from utils.exceptions import LLMError
+from core.logger import logger
+from core.exceptions import LLMError
 from config.embedding import embeddings
 
 

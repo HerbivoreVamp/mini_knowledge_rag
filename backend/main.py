@@ -6,8 +6,8 @@ from config.model import create_embedding, create_llm
 from ingestion.service import ingestion_service
 from knowledge_manage.vectorstore import load_vectorstore, delete_vectorstore
 from generation.service import create_generation_service
-from utils.logger import setup_logger
-from utils.exceptions import RAGError
+from core.logger import setup_logger
+from core.exceptions import RAGError
 
 logger = setup_logger()
 logger.info("程序启动")

@@ -3,8 +3,8 @@
 from pathlib import Path
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from utils.logger import logger
-from utils.exceptions import EmbeddingError
+from core.logger import logger
+from core.exceptions import EmbeddingError
 
 
 def embeddings(dir_path, model_name):

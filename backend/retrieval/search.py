@@ -2,8 +2,8 @@
 
 from langchain.tools import tool
 
-from utils.logger import logger
-from utils.exceptions import RetrievalError
+from core.logger import logger
+from core.exceptions import RetrievalError
 
 
 def create_retrieve_tool(vector_store):

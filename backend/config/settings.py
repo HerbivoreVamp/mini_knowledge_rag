@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from dataclasses import dataclass
 from pathlib import Path
 
-from utils.logger import logger
+from core.logger import logger
 
 @dataclass
 class Settings:

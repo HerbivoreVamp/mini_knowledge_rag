@@ -1,4 +1,4 @@
-from utils.exceptions import GenerationError, RAGError
+from core.exceptions import GenerationError, RAGError
 from agent.agent import create_rag_agent
 from .chat import chat_generation
 

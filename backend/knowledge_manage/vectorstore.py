@@ -3,8 +3,8 @@ import shutil
 from pathlib import Path
 from langchain_community.vectorstores import FAISS
 
-from utils.logger import logger
-from utils.exceptions import VectorStoreLoadError, VectorStoreNotFoundError, VectorStoreError, VectorStoreDeleteError
+from core.logger import logger
+from core.exceptions import VectorStoreLoadError, VectorStoreNotFoundError, VectorStoreError, VectorStoreDeleteError
 
 
 def build_vectorstore(docs, embedding):

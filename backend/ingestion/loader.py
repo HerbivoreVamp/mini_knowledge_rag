@@ -4,8 +4,8 @@ from pathlib import Path
 from functools import partial
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 
-from utils.logger import logger
-from utils.exceptions import LoaderError
+from core.logger import logger
+from core.exceptions import LoaderError
 
 
 def load_all_md(
