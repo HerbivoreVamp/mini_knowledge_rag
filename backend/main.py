@@ -4,7 +4,7 @@ from config.settings import get_settings
 from config.prompts import SYSTEM_PROMPT
 from config.model import create_embedding, create_llm
 from ingestion.service import ingestion_service
-from knowledge_manage.vectorstore import load_vectorstore, delete_vectorstore
+from storage.vectorstore import load_vectorstore, delete_vectorstore
 from generation.service import create_generation_service
 from core.logger import setup_logger
 from core.exceptions import RAGError

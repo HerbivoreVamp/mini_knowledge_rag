@@ -58,7 +58,7 @@ if __name__ == '__main__':
     )
 
     from ingestion.embedding import embeddings
-    from backend.knowledge_manage.vectorstore import load_vectorstore
+    from backend.storage.vectorstore import load_vectorstore
     from langchain.chat_models import init_chat_model
     from langchain.messages import HumanMessage
     from langchain.agents import create_agent

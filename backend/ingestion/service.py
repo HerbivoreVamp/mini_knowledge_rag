@@ -1,7 +1,7 @@
 from .loader import load_all_md
 from .splitter import split_text
 from core.exceptions import RAGError
-from knowledge_manage.vectorstore import save_vectorstore, build_vectorstore
+from storage.vectorstore import save_vectorstore, build_vectorstore
 
 
 def ingestion_service(document_dir, folder, emb, database_dir, database_index_name):
