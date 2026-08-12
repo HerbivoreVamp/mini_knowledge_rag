@@ -4,10 +4,10 @@ from core.exceptions import LoaderError
 
 
 def test_missing_file(tmp_path):
-    missing_file = tmp_path / "不存在的文件"
     with pytest.raises(LoaderError):
         load_md(
-            dir_path=missing_file,
+            root_path=tmp_path,
+            dir_path="不存在的文件",
             single_file=True
         )
 
@@ -18,7 +18,8 @@ def test_empty_file(tmp_path):
 
     with pytest.raises(LoaderError):
         load_md(
-            dir_path=empty_file,
+            root_path=tmp_path,
+            dir_path="empty.md",
             single_file=True
         )
 
@@ -28,7 +29,8 @@ def test_load_markdown(tmp_path):
     md_file.write_text("# hello")
 
     docs = load_md(
-        dir_path=md_file,
+        root_path=tmp_path,
+        dir_path="测试用md文件.md",
         single_file=True
     )
 

@@ -41,7 +41,7 @@ def test_retrieve_context_success():
 
     fake_vectorstore.similarity_search.assert_called_once_with(  # 提醒自己:如果k改成(模型)自定义检索数量需要修改
         "测试问题",
-        k=5
+        k=2
     )
 
 

@@ -25,7 +25,7 @@ def create_retrieve_tool(vector_store):
                 return "检索工具调用失败：query为空。请重新生成有效检索关键词。", []
             docs = vector_store.similarity_search(
                 query,
-                k=5
+                k=2
             )
             logger.info(f"retrieve_context返回结果数量={len(docs)}")
             serialized = "\n\n".join(
