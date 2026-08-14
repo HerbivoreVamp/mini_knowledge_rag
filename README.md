@@ -44,8 +44,8 @@ backend/
 │
 ├── data/                    # 数据目录
 │   ├── document/            # Markdown 知识文档
+│   ├── database/            # 向量库
 │   └── memory/              # LangGraph 对话状态持久化
-│
 └── logs/                    # 运行日志
 
 tests/
