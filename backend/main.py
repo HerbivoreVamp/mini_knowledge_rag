@@ -18,7 +18,7 @@ emb = create_embedding(settings)
 llm = create_llm(settings)
 # --- 向量库加载 ---
 try:
-    vectorstore = load_vectorstore(settings.database_dir, emb, settings.index_name)
+    vectorstore = load_vectorstore(settings.vectorstore_dir, emb, settings.index_name)
 except RAGError as e:
     print(e)
     vectorstore = None
@@ -35,7 +35,7 @@ with SqliteSaver.from_conn_string(str(settings.memory_dir / "checkpoints.db")) a
             print("功能1: 导入文档")
             folder = input("请输入文档文件夹名称:\n")
             try:
-                vectorstore = ingestion_service(settings.document_dir, folder, emb, settings.database_dir,
+                vectorstore = ingestion_service(settings.document_dir, folder, emb, settings.vectorstore_dir,
                                                 settings.index_name, vectorstore)
             except RAGError:
                 continue
@@ -62,7 +62,7 @@ with SqliteSaver.from_conn_string(str(settings.memory_dir / "checkpoints.db")) a
         elif option == "3":
             print("功能3: 删除数据库")
             try:
-                delete_vectorstore(str(settings.database_dir), settings.index_name)
+                delete_vectorstore(str(settings.database_dir), settings.database_name)
                 vectorstore = None
             except RAGError as e:
                 print(e)

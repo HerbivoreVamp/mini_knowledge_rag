@@ -95,10 +95,10 @@ def test_save_vectorstore_success(mocker, tmp_path):
         "test_index"
     )
 
-    assert path == tmp_path / "test_index"
+    assert path == tmp_path
 
     fake_vec.save_local.assert_called_once_with(
-        folder_path=str(tmp_path / "test_index"),
+        folder_path=str(tmp_path),
         index_name="test_index"
     )
 

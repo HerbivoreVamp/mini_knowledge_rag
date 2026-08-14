@@ -109,7 +109,7 @@ def save_vectorstore(vectorstore, save_dir, index_name):
         raise VectorStoreError(
             "index_name必须是字符串str"
         )
-    path = Path(save_dir) / index_name
+    path = Path(save_dir)
 
     try:
         vectorstore.save_local(
@@ -131,7 +131,7 @@ def save_vectorstore(vectorstore, save_dir, index_name):
 
 
 def load_vectorstore(load_dir, embedding, index_name):
-    path = Path(load_dir) / index_name
+    path = Path(load_dir)
 
     if not path.exists():
         raise VectorStoreNotFoundError(
