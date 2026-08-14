@@ -59,17 +59,22 @@ tests/
 **文档导入**
 
 ```
-Markdown 文件
-  │
-Loader
-  │
-Splitter
-  │
-Embedding
-  │
-Vectorstore Manager
-  │
-FAISS
+    Markdown 文件
+      │
+    Loader
+      │
+ParentDocumentRetriever
+      │
+      ├────────────────+
+      │                │
+      │                │
+Parent Document     Child Document
+      │                │
+      │                │
+JsonDocStore        Embedding
+                       │
+                       │
+                     FAISS
 ```
 
 **查询问答**
@@ -83,7 +88,7 @@ Retriever Tool
   │
 FAISS（child chunk 向量搜索）
   │
-Parent Document 召回（JsonDocStore）
+Parent Document (parent document lookup)
   │
 Context
   │
@@ -99,6 +104,7 @@ Answer
 - **框架**:LangChain + LangGraph
 - **Embedding**: BAAI/bge-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
+- **Retriever**: LangChain ParentDocumentRetriever
 - **LLM**: LangChain ChatModel（支持 OpenAI Compatible API）
 - **记忆**: SQLite (LangGraph Checkpoint)
 
@@ -134,7 +140,7 @@ pytest
 - SQLite 持久化保存对话状态
 - 统一异常处理（RAGError 异常体系）
 - 完整日志记录
-
+- 支持基于配置切换不同知识库索引，每个知识库独立维护 FAISS 向量索引和 Parent Document 存储
 ## Logging
 
 项目使用 Python logging 记录运行状态，包括：
@@ -156,9 +162,12 @@ pytest
 - [x] 优化项目目录结构
 - [x] 增加 pytest 单元测试
 - [x] 修改vectorstore的创建和导入 文档的导入
-- [ ] 修改检索为HierarchicalRetriever
-  - [x] 完成功能
-  - [ ] 完成异常处理和pytest测试完善
+- [x] HierarchicalRetriever
+  - [x] ParentDocumentRetriever 集成
+  - [x] JsonDocStore 持久化
+  - [x] Parent/Child 文档检索流程
+  - [ ] 异常处理完善
+  - [ ] pytest测试完善
 - [ ] 增加SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测

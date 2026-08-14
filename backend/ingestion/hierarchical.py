@@ -103,6 +103,6 @@ def create_parent_retriever(vectorstore, parent_store: JsonDocStore) -> ParentDo
     return retriever
 
 
-def retriever_add_doc(retriever, docs) -> ParentDocumentRetriever:
+def add_documents_to_retriever(retriever, docs) -> ParentDocumentRetriever:
     retriever.add_documents(docs)
     return retriever
