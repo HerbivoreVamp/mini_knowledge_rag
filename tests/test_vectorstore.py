@@ -1,6 +1,6 @@
 import pytest
-from storage.vectorstore import build_vectorstore, save_vectorstore, load_vectorstore
-from core.exceptions import VectorStoreError, VectorStoreNotFoundError
+from storage.vectorstore import build_vectorstore, save_vectorstore, load_vectorstore, create_empty_vectorstore, add_documents, delete_vectorstore
+from core.exceptions import VectorStoreError, VectorStoreNotFoundError, VectorStoreDeleteError
 from langchain_core.documents import Document
 
 
@@ -136,3 +136,59 @@ def test_load_vectorstore_success(tmp_path):
     )
 
     assert loaded is not None
+
+
+def test_create_empty_vectorstore():
+    empty_emb = None
+    with pytest.raises(VectorStoreError):
+        vectorstore = create_empty_vectorstore(
+            empty_emb
+        )
+
+
+def test_create_empty_vectorstore_success():
+    fake_emb = FakeEmbedding()
+    vectorstore = create_empty_vectorstore(
+        fake_emb
+    )
+    assert vectorstore is not None
+
+
+def test_add_documents_vec_is_none():
+    with pytest.raises(VectorStoreError):
+        add_documents(None, [Document(page_content="测试")])
+
+
+def test_add_documents_docs_not_list():
+    fake_emb = FakeEmbedding()
+    vectorstore = create_empty_vectorstore(fake_emb)
+    with pytest.raises(VectorStoreError):
+        add_documents(vectorstore, "not a list")
+
+
+def test_add_documents_docs_empty():
+    fake_emb = FakeEmbedding()
+    vectorstore = create_empty_vectorstore(fake_emb)
+    with pytest.raises(VectorStoreError):
+        add_documents(vectorstore, [])
+
+
+def test_add_documents_docs_not_document():
+    fake_emb = FakeEmbedding()
+    vectorstore = create_empty_vectorstore(fake_emb)
+    with pytest.raises(VectorStoreError):
+        add_documents(vectorstore, ["not a Document"])
+
+
+def test_add_documents_success(mocker):
+    vectorstore = mocker.Mock()
+    docs = [
+        Document(page_content="测试文本")
+    ]
+    result = add_documents(vectorstore, docs)
+    vectorstore.add_documents.assert_called_once_with(docs)
+    assert result == vectorstore
+
+
+
+

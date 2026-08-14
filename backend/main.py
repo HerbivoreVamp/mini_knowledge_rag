@@ -36,7 +36,7 @@ with SqliteSaver.from_conn_string(str(settings.memory_dir / "checkpoints.db")) a
             folder = input("请输入文档文件夹名称:\n")
             try:
                 vectorstore = ingestion_service(settings.document_dir, folder, emb, settings.database_dir,
-                                                settings.index_name)
+                                                settings.index_name, vectorstore)
             except RAGError:
                 continue
             print("保存成功")

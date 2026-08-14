@@ -152,6 +152,9 @@ pytest
 - [x] 封装 ingestion/retrieval/generation 模块
 - [x] 优化项目目录结构
 - [x] 增加 pytest 单元测试
+- [x] 修改vectorstore的创建和导入 文档的导入
+- [ ] 增加HierarchicalRetriever
+- [ ] 增加SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测
   - [ ] 自定义检索准确率测试
