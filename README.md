@@ -25,9 +25,10 @@ backend/
 │   └── logger.py            # 日志配置
 │
 ├── ingestion/               # 文档导入模块
-│   ├── service.py           # 导入流程编排（load → split → embed → save）
+│   ├── service.py           # 导入流程编排（load → parent_retriever → embed → save）
 │   ├── loader.py            # Markdown 文档加载
-│   └── splitter.py          # 文本切分
+│   ├── splitter.py          # 文本切分
+│   └── hierarchical.py      # ParentDocumentRetriever 分层检索
 │
 ├── storage/                 # 存储模块
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
@@ -80,7 +81,9 @@ Agent
   │
 Retriever Tool
   │
-FAISS
+FAISS（child chunk 向量搜索）
+  │
+Parent Document 召回（JsonDocStore）
   │
 Context
   │
@@ -153,7 +156,9 @@ pytest
 - [x] 优化项目目录结构
 - [x] 增加 pytest 单元测试
 - [x] 修改vectorstore的创建和导入 文档的导入
-- [ ] 增加HierarchicalRetriever
+- [ ] 修改检索为HierarchicalRetriever
+  - [x] 完成功能
+  - [ ] 完成异常处理和pytest测试完善
 - [ ] 增加SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测

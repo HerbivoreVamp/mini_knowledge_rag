@@ -4,6 +4,7 @@ from config.settings import get_settings
 from config.prompts import SYSTEM_PROMPT
 from config.model import create_embedding, create_llm
 from ingestion.service import ingestion_service
+from ingestion.hierarchical import create_docstore, create_parent_retriever
 from storage.vectorstore import load_vectorstore, delete_vectorstore
 from application.service import create_generation_service
 from core.logger import setup_logger
@@ -19,9 +20,13 @@ llm = create_llm(settings)
 # --- 向量库加载 ---
 try:
     vectorstore = load_vectorstore(settings.vectorstore_dir, emb, settings.index_name)
+    retriever = create_parent_retriever(vectorstore=vectorstore,
+                                        parent_store=create_docstore(settings.parent_store_dir)
+                                        )
 except RAGError as e:
     print(e)
     vectorstore = None
+    retriever = None
 
 # --- 主循环 ---
 print("1. 导入文档到数据库")
@@ -35,14 +40,20 @@ with SqliteSaver.from_conn_string(str(settings.memory_dir / "checkpoints.db")) a
             print("功能1: 导入文档")
             folder = input("请输入文档文件夹名称:\n")
             try:
-                vectorstore = ingestion_service(settings.document_dir, folder, emb, settings.vectorstore_dir,
-                                                settings.index_name, vectorstore)
+                retriever = ingestion_service(document_dir=settings.document_dir,
+                                              folder=folder,
+                                              emb=emb,
+                                              vectorstore_dir=settings.vectorstore_dir,
+                                              index_name=settings.index_name,
+                                              parent_store_dir=settings.parent_store_dir,
+                                              vectorstore=vectorstore,
+                                              )
             except RAGError:
                 continue
             print("保存成功")
         elif option == "2":
             try:
-                generator = create_generation_service(llm, SYSTEM_PROMPT, vectorstore, checkpointer)
+                generator = create_generation_service(llm, SYSTEM_PROMPT, retriever, checkpointer)
             except RAGError as e:
                 print(e)
                 continue

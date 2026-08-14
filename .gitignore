@@ -29,3 +29,6 @@ Thumbs.db
 
 # 日志
 *.log
+
+# 特定
+backend/data/database/

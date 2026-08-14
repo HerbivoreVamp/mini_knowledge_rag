@@ -5,15 +5,15 @@ from core.logger import logger
 from core.exceptions import AgentError
 
 
-def create_rag_agent(llm, system_prompt, vectorstore, checkpointer):
+def create_rag_agent(llm, system_prompt, retriever, checkpointer):
     """创建RAG Agent"""
-    if vectorstore is None:
-        logger.error("vectorstore不存在")
+    if retriever is None:
+        logger.error("retriever不存在")
         raise AgentError(
-            "vectorstore不能为空"
+            "retriever不能为空"
         )
     try:
-        tool = create_retrieve_tool(vectorstore)
+        tool = create_retrieve_tool(retriever)
         agent = create_agent(
             llm,
             tools=[tool],

@@ -3,9 +3,9 @@ from agent.agent import create_rag_agent
 from .chat import chat_generation
 
 
-def create_generation_service(llm, system_prompt, vectorstore, checkpointer):
+def create_generation_service(llm, system_prompt,retriever, checkpointer):
     try:
-        agent = create_rag_agent(llm, system_prompt, vectorstore, checkpointer)
+        agent = create_rag_agent(llm, system_prompt, retriever, checkpointer)
     except RAGError:
         raise
 

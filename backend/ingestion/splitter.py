@@ -5,6 +5,28 @@ from core.logger import logger
 from core.exceptions import SplitError
 
 
+def create_text_splitter(chunk_size=800, chunk_overlap=100, add_start_index=True):
+    """创建文本分块器"""
+    if chunk_size <= 0:
+        raise SplitError("chunk_size必须大于0")
+
+    if chunk_overlap < 0 or chunk_overlap >= chunk_size:
+        raise SplitError(
+            "chunk_overlap必须>=0且小于chunk_size"
+        )
+    try:
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+            add_start_index=add_start_index,
+        )
+    except Exception as e:
+        logger.error("splitter创建失败")
+        raise SplitError("splitter创建失败") from e
+    return text_splitter
+
+
+# 弃用
 def split_text(
         docs,
         chunk_size=800,
@@ -25,24 +47,13 @@ def split_text(
     if not docs:
         raise SplitError("没有文档可进行切分")
 
-    if chunk_size <= 0:
-        raise SplitError("chunk_size必须大于0")
-
-    if chunk_overlap < 0 or chunk_overlap >= chunk_size:
-        raise SplitError(
-            "chunk_overlap必须>=0且小于chunk_size"
-        )
-    if not isinstance(docs[0],Document):
+    if not isinstance(docs[0], Document):
         raise SplitError(
             "docs必须是由Document组成的的列表[Document,...]"
         )
+    text_splitter = create_text_splitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap,
+                                         add_start_index=add_start_index)
     try:
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=chunk_size,
-            chunk_overlap=chunk_overlap,
-            add_start_index=add_start_index,
-        )
-
         splits = text_splitter.split_documents(docs)
 
     except Exception as e:
@@ -63,12 +74,3 @@ def split_text(
             print("metadata:", s.metadata)
 
     return splits
-
-
-if __name__ == "__main__":
-    from loader import *
-
-    docs = load_all_md(
-        r"D:\dump\my_project\mini_knowledge_rag\backend\document\langchain_doc")
-    splits = split_text(docs, preview=True)
-    print(type(splits))
