@@ -17,10 +17,11 @@ def ingestion_service(document_dir, folder, emb, vectorstore_dir, index_name, pa
                 str(vectorstore_dir),
                 index_name,
             )
-            logger.info("空向量库创建完毕")
-        retriever = create_parent_retriever(vectorstore=vectorstore,  # 这个json会自动保存
-                                            parent_store=create_docstore(parent_store_dir)
-                                            )
+        if retriever is None:
+            retriever = create_parent_retriever(
+                vectorstore=vectorstore,
+                parent_store=create_docstore(parent_store_dir)  # 这个json会自动保存
+            )
         retriever = add_documents_to_retriever(retriever=retriever, docs=docs)
         save_vectorstore(
             vectorstore,

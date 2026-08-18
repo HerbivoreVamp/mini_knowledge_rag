@@ -166,9 +166,9 @@ pytest
   - [x] ParentDocumentRetriever 集成
   - [x] JsonDocStore 持久化
   - [x] Parent/Child 文档检索流程
-  - [ ] 异常处理完善
-  - [ ] pytest测试完善
-- [ ] 增加SemanticChunker
+  - [x] 异常处理完善
+  - [x] pytest测试完善
+- [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测
   - [ ] 自定义检索准确率测试

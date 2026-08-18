@@ -1,7 +1,7 @@
 import pytest
 
 from ingestion.loader import load_md
-from ingestion.splitter import split_text
+from ingestion.hierarchical import create_docstore, create_parent_retriever, add_documents_to_retriever
 from storage.vectorstore import create_empty_vectorstore, save_vectorstore,add_documents
 
 # tests/test_ingestion_service.py
@@ -15,17 +15,24 @@ def test_ingestion_service(mocker, tmp_path):
         return_value=["doc"]
     )
 
-    mock_split = mocker.patch(
-        "ingestion.service.split_text",
-        return_value=["chunk"]
-    )
-    mock_create = mocker.patch(
+    mock_create_empty_vectorstore = mocker.patch(
         "ingestion.service.create_empty_vectorstore",
         return_value="fake_vectorstore"
     )
+
+    mock_create_parent_retriever = mocker.patch(
+        "ingestion.service.create_parent_retriever",
+        return_value="fake_retriever"
+    )
+
     mock_add = mocker.patch(
         "ingestion.service.add_documents",
         return_value="add_vectorstore"
+    )
+
+    mock_add_documents_to_retriever = mocker.patch(
+        "ingestion.service.add_documents_to_retriever",
+        return_value="add_documents_to_retriever"
     )
 
     mock_save = mocker.patch(
@@ -37,8 +44,9 @@ def test_ingestion_service(mocker, tmp_path):
         "document",
         "fake_embedding",
         tmp_path,
-        "test_index"
+        "test_index",
+        tmp_path,
     )
 
-    assert result == "add_vectorstore"
+    assert result == "add_documents_to_retriever"
 

@@ -19,16 +19,16 @@ def test_create_retrieve_tool_vectorstore_none():
 
 
 def test_retrieve_context_success():
-    fake_vectorstore = MagicMock()
+    fake_retriever = MagicMock()
 
-    fake_vectorstore.similarity_search.return_value = [
+    fake_retriever.invoke.return_value = [
         FakeDoc(
             "这是测试内容",
             "test.md"
         )
     ]
 
-    tool = create_retrieve_tool(fake_vectorstore)
+    tool = create_retrieve_tool(fake_retriever)
 
     result = tool.invoke(  # invoke直接会返回context
         {
@@ -39,9 +39,8 @@ def test_retrieve_context_success():
     assert "这是测试内容" in result
     assert "test.md" in result
 
-    fake_vectorstore.similarity_search.assert_called_once_with(  # 提醒自己:如果k改成(模型)自定义检索数量需要修改
+    fake_retriever.invoke.assert_called_once_with(
         "测试问题",
-        k=2
     )
 
 
@@ -58,11 +57,11 @@ def test_retrieve_context_empty_query():
 
 
 def test_retrieve_context_exception():
-    fake_vectorstore = MagicMock()
-    fake_vectorstore.similarity_search.side_effect = Exception(  # 手动报错
+    fake_retrieve = MagicMock()
+    fake_retrieve.invoke.side_effect = Exception(  # 手动报错
         "faiss error"
     )
-    tool = create_retrieve_tool(fake_vectorstore)
+    tool = create_retrieve_tool(fake_retrieve)
     result = tool.invoke(
         {
             "query": "测试"

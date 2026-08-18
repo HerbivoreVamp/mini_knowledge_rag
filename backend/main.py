@@ -23,10 +23,13 @@ try:
     retriever = create_parent_retriever(vectorstore=vectorstore,
                                         parent_store=create_docstore(settings.parent_store_dir)
                                         )
+    logger.info(f"vectorstore导入成功 path={settings.vectorstore_dir}")
+    logger.info(f"retriever导入成功 path={settings.parent_store_dir}")
 except RAGError as e:
     print(e)
     vectorstore = None
     retriever = None
+    logger.info("导入失败，初始化vectorstore和retriever")
 
 # --- 主循环 ---
 print("1. 导入文档到数据库")
@@ -47,6 +50,7 @@ with SqliteSaver.from_conn_string(str(settings.memory_dir / "checkpoints.db")) a
                                               index_name=settings.index_name,
                                               parent_store_dir=settings.parent_store_dir,
                                               vectorstore=vectorstore,
+                                              retriever=retriever,
                                               )
             except RAGError:
                 continue
@@ -75,6 +79,7 @@ with SqliteSaver.from_conn_string(str(settings.memory_dir / "checkpoints.db")) a
             try:
                 delete_vectorstore(str(settings.database_dir), settings.database_name)
                 vectorstore = None
+                retriever = None
             except RAGError as e:
                 print(e)
                 continue

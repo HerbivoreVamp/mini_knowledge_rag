@@ -44,3 +44,8 @@ class AgentError(RAGError):
 
 class LLMError(RAGError):
     pass
+
+
+class DocStoreError(RAGError):
+    """文档存储相关异常"""
+    pass
