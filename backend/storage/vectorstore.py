@@ -162,7 +162,7 @@ def load_vectorstore(load_dir, embedding, index_name):
 
 
 def delete_vectorstore(delete_dir: str, index_name: str):
-    """删除指定名称的向量库文件夹"""
+    """删除指定名称的向量库文件夹(实际上就是把文件夹旗下所有东西丢了 你想删除什么都可以)"""
 
     path = Path(delete_dir) / Path(index_name)
 
