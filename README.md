@@ -21,6 +21,7 @@ backend/
 │   └── embedding.py         # Embedding 模型配置
 │
 ├── core/                    # 核心模块
+│   ├── utils.py             # 杂乱的小功能 目前只有删除记忆
 │   ├── exceptions.py        # 统一异常定义
 │   └── logger.py            # 日志配置
 │
