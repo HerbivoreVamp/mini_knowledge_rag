@@ -20,6 +20,7 @@ def load_md(
     path = root_path / dir_path
 
     if not path.exists():
+        logger.error(f"文档路径不存在 path={path}")
         raise LoaderError(
             f"文档路径不存在 path={path}"
         )

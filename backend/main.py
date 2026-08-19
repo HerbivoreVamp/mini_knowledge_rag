@@ -1,12 +1,11 @@
-from pathlib import Path
-
 from langgraph.checkpoint.sqlite import SqliteSaver
 
 from config.settings import get_settings
 from config.prompts import SYSTEM_PROMPT
 from config.model import create_embedding, create_llm
 from ingestion.service import ingestion_service
-from ingestion.hierarchical import create_docstore, create_parent_retriever
+from ingestion.hierarchical import create_parent_retriever
+from storage.docstore import create_docstore
 from storage.vectorstore import load_vectorstore, delete_vectorstore
 from application.service import create_generation_service
 from core.logger import setup_logger
@@ -57,6 +56,7 @@ while True:
                                           retriever=retriever,
                                           )
         except RAGError:
+            print(f"找不到对应文件夹{folder}")
             continue
         print("保存成功")
     elif option == "2":
@@ -82,11 +82,11 @@ while True:
     elif option == "3":
         print("功能3: 删除数据库并删除记忆")
         try:
-            delete_vectorstore(str(settings.database_dir), settings.database_name)
+            delete_vectorstore(settings.database_dir, settings.database_name)
             vectorstore = None
             retriever = None
-        except RAGError as e:
-            print(e)
+        except RAGError:
+            print("删除失败")
             continue
         clear_checkpoints(settings.memory_dir / "checkpoints.db")
     elif option == "4":

@@ -1,8 +1,9 @@
 from pathlib import Path
 
 from .loader import load_md
-from .hierarchical import create_docstore, create_parent_retriever, add_documents_to_retriever
+from .hierarchical import create_parent_retriever, add_documents_to_retriever
 from core.exceptions import RAGError
+from storage.docstore import create_docstore
 from storage.vectorstore import save_vectorstore, create_empty_vectorstore, add_documents
 
 
