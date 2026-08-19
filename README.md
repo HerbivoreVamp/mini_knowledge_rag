@@ -32,6 +32,7 @@ backend/
 │   └── hierarchical.py      # ParentDocumentRetriever 分层检索
 │
 ├── storage/                 # 存储模块
+│   ├── docstore.py          # json格式存储parent文档
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
 ├── retrieval/               # 检索模块
@@ -169,6 +170,8 @@ pytest
   - [x] Parent/Child 文档检索流程
   - [x] 异常处理完善
   - [x] pytest测试完善
+- [ ] 完成Reranker
+- [ ] 完成hybridsearch
 - [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测

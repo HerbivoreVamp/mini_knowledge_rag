@@ -96,42 +96,41 @@ def build_vectorstore(docs, embeddings):
         ) from e
 
 
-def save_vectorstore(vectorstore, save_dir, index_name):
+def save_vectorstore(vectorstore, save_dir: Path, index_name):
     if vectorstore is None:
         raise VectorStoreError(
             "vectorstore不能为None"
         )
-    if not isinstance(save_dir, str):
+    if not isinstance(save_dir, Path):
         raise VectorStoreError(
-            "save_dir必须是字符串str"
+            "save_dir必须是Path"
         )
     if not isinstance(index_name, str):
         raise VectorStoreError(
             "index_name必须是字符串str"
         )
-    path = Path(save_dir)
 
     try:
         vectorstore.save_local(
-            folder_path=str(path),
+            folder_path=str(save_dir),
             index_name=index_name
         )
 
         logger.info(
-            f"向量库保存成功 path={path}"
+            f"向量库保存成功 path={save_dir}"
         )
-        return path
+        return save_dir
     except Exception as e:
         logger.exception(
-            f"向量库保存失败 path={path}"
+            f"向量库保存失败 path={save_dir}"
         )
         raise VectorStoreError(
             "向量库保存失败"
         ) from e
 
 
-def load_vectorstore(load_dir, embedding, index_name):
-    path = Path(load_dir)
+def load_vectorstore(load_dir: Path, embedding, index_name):
+    path = load_dir
 
     if not path.exists():
         raise VectorStoreNotFoundError(
@@ -161,10 +160,10 @@ def load_vectorstore(load_dir, embedding, index_name):
         ) from e
 
 
-def delete_vectorstore(delete_dir: str, index_name: str):
+def delete_vectorstore(delete_dir: Path, index_name: str):
     """删除指定名称的向量库文件夹(实际上就是把文件夹旗下所有东西丢了 你想删除什么都可以)"""
 
-    path = Path(delete_dir) / Path(index_name)
+    path = delete_dir / Path(index_name)
 
     try:
         if not path.exists():

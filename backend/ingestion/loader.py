@@ -9,15 +9,15 @@ from core.exceptions import LoaderError
 
 
 def load_md(
-        root_path: str,
-        dir_path: str,
+        root_path: Path,
+        dir_path: Path,
         show_progress: bool = False,
         preview: bool = False,
         single_file: bool = False,
 ):
     """加载 markdown 文件，支持目录批量导入和单文件导入"""
 
-    path = Path(root_path) / Path(dir_path)
+    path = root_path / dir_path
 
     if not path.exists():
         raise LoaderError(
@@ -65,7 +65,7 @@ def load_md(
             continue
 
         file_path = Path(doc.metadata.get("source", "")).resolve()
-        relative_path = file_path.relative_to(Path(root_path))
+        relative_path = file_path.relative_to(root_path)
         doc.metadata.update({
             "source": str(relative_path),
             "file_type": "markdown"

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pytest
 from storage.vectorstore import build_vectorstore, save_vectorstore, load_vectorstore, create_empty_vectorstore, add_documents, delete_vectorstore
 from core.exceptions import VectorStoreError, VectorStoreNotFoundError, VectorStoreDeleteError
@@ -91,7 +93,7 @@ def test_save_vectorstore_success(mocker, tmp_path):
 
     path = save_vectorstore(
         fake_vec,
-        str(tmp_path),
+        tmp_path,
         "test_index"
     )
 
@@ -108,7 +110,7 @@ def test_load_vectorstore_isnt_found():
     fake_emb = FakeEmbedding()
     fake_index = "不存在的文件"
     with pytest.raises(VectorStoreNotFoundError):
-        load_vectorstore(fake_dir, fake_emb, fake_index)
+        load_vectorstore(Path(fake_dir), fake_emb, fake_index)
 
 
 def test_load_vectorstore_success(tmp_path):
@@ -125,12 +127,12 @@ def test_load_vectorstore_success(tmp_path):
 
     save_vectorstore(
         vectorstore,
-        str(tmp_path),
+        tmp_path,
         "test_index"
     )
 
     loaded = load_vectorstore(
-        str(tmp_path),
+        tmp_path,
         embedding,
         "test_index"
     )
