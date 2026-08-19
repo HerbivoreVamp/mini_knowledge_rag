@@ -1,9 +1,9 @@
 import pytest
 
 from ingestion.loader import load_md
-from ingestion.hierarchical import create_docstore, create_parent_retriever, add_documents_to_retriever
+from ingestion.hierarchical import create_parent_retriever, add_documents_to_retriever
 from storage.vectorstore import create_empty_vectorstore, save_vectorstore,add_documents
-
+from storage.docstore import create_docstore
 # tests/test_ingestion_service.py
 
 from ingestion.service import ingestion_service
