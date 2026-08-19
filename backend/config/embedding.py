@@ -7,16 +7,17 @@ from core.logger import logger
 from core.exceptions import EmbeddingError
 
 
-def embeddings(dir_path, model_name):
+def embeddings(dir_path: Path, model_name: str, device: str = 'cpu'):
     try:
         emb = HuggingFaceEmbeddings(
-            model_name=str(Path(dir_path) / model_name)
+            model_name=str(dir_path / model_name),
+            model_kwargs={'device': device}
         )
         logger.info(f"嵌入模型加载成功 model_name={model_name}")
-        return emb
     except Exception as e:
         logger.exception(f"嵌入模型加载失败 model_name={model_name}")
         raise EmbeddingError(f"嵌入模型加载失败: {model_name}") from e
+    return emb
 
 
 if __name__ == "__main__":

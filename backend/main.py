@@ -2,9 +2,9 @@ from langgraph.checkpoint.sqlite import SqliteSaver
 
 from config.settings import get_settings
 from config.prompts import SYSTEM_PROMPT
-from config.model import create_embedding, create_llm
+from config.model import create_embedding, create_llm, create_reranker
 from ingestion.service import ingestion_service
-from ingestion.hierarchical import create_parent_retriever
+from retrieval.hierarchical import HierarchicalRetriever
 from storage.docstore import create_docstore
 from storage.vectorstore import load_vectorstore, delete_vectorstore
 from application.service import create_generation_service
@@ -18,13 +18,15 @@ logger.info("程序启动")
 settings = get_settings()
 # --- 模型初始化 ---
 emb = create_embedding(settings)
+reranker = create_reranker(settings)
 llm = create_llm(settings)
 # --- 向量库加载 ---
 try:
     vectorstore = load_vectorstore(settings.vectorstore_dir, emb, settings.index_name)
-    retriever = create_parent_retriever(vectorstore=vectorstore,
-                                        parent_store=create_docstore(settings.parent_store_dir)
-                                        )
+    retriever = HierarchicalRetriever(vectorstore=vectorstore,
+                                      parent_store=create_docstore(settings.parent_store_dir),
+                                      reranker=reranker
+                                      )
     logger.info(f"vectorstore导入成功 path={settings.vectorstore_dir}")
     logger.info(f"retriever导入成功 path={settings.parent_store_dir}")
 except RAGError as e:
@@ -54,6 +56,7 @@ while True:
                                           parent_store_dir=settings.parent_store_dir,
                                           vectorstore=vectorstore,
                                           retriever=retriever,
+                                          reranker=reranker
                                           )
         except RAGError:
             print(f"找不到对应文件夹{folder}")

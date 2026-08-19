@@ -1,67 +1,50 @@
-from langchain_classic.retrievers import ParentDocumentRetriever
+import uuid
 
-from .splitter import create_text_splitter
-from core.logger import logger
-from core.exceptions import RetrievalError
 from storage.docstore import JsonDocStore
+from core.logger import logger
 
 
-def create_parent_retriever(vectorstore, parent_store: JsonDocStore) -> ParentDocumentRetriever:
-    parent_chunk_size = 2000
-    parent_chunk_overlap = 200
-    child_chunk_size = 400
-    child_chunk_overlap = 50
-    k = 2
-
-    parent_splitter = create_text_splitter(chunk_size=parent_chunk_size, chunk_overlap=parent_chunk_overlap,
-                                           add_start_index=True)
-    child_splitter = create_text_splitter(chunk_size=child_chunk_size, chunk_overlap=child_chunk_overlap,
-                                          add_start_index=True)
-
-    try:
-        retriever = ParentDocumentRetriever(
-            vectorstore=vectorstore,
-            docstore=parent_store,
-            parent_splitter=parent_splitter,
-            child_splitter=child_splitter,
-            search_kwargs={
-                "k": 2
-            }
-        )
-        # child_retriever = vectorstore.as_retriever(
-        #     search_kwargs={
-        #         "k": 30
-        #     }
-        # )
-        # child_docs = child_retriever.invoke(query)
-        #
-        # child_docs = reranker.rerank(
-        #     query,
-        #     child_docs,
-        #     top_k=5
-        # )
-    except Exception as e:
-        logger.error(
-            "Hierarchical Retriever 创建失败 error=%s",
-            e
-        )
-        raise RetrievalError(
-            "Hierarchical Retriever 创建失败"
-        ) from e
-    logger.info(
-        "Hierarchical Retriever 创建成功 "
-        "parent_chunk_size=%s parent_chunk_overlap=%s "
-        "child_chunk_size=%s child_chunk_overlap=%s k=%s",
-        parent_chunk_size,
-        parent_chunk_overlap,
-        child_chunk_size,
-        child_chunk_overlap,
-        k,
+def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_splitter, child_splitter):
+    parents = parent_splitter.split_documents(
+        docs
     )
-    return retriever
+    parent_items = []
+    child_docs = []
 
+    for parent in parents:
 
-def add_documents_to_retriever(retriever, docs) -> ParentDocumentRetriever:
-    retriever.add_documents(docs)
-    logger.info(f"新文档已添加至retriever docs={len(docs)}")
-    return retriever
+        parent_id = str(uuid.uuid4())
+
+        parent.metadata["parent_id"] = parent_id
+
+        children = child_splitter.split_documents(
+            [parent]
+        )
+
+        for child in children:
+            child.metadata["parent_id"] = parent_id
+
+        child_docs.extend(children)
+
+        parent_items.append(
+            (parent_id, parent)
+        )
+
+    # 一次保存所有parent
+    parent_store.mset(
+        parent_items
+    )
+
+    # 一次添加所有child
+    vectorstore.add_documents(
+        child_docs
+    )
+    logger.info(
+        "导入完成 parents=%s children=%s",
+        len(parent_items),
+        len(child_docs)
+    )
+    return {
+        "parents": len(parent_items),
+        "children": len(child_docs)
+    }

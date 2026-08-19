@@ -13,7 +13,7 @@ class Settings:
     database_dir: Path
     memory_dir: Path
     document_dir: Path
-    database_name:str
+    database_name: str
     index_name: str
     vectorstore_dir: Path
     parent_store_dir: Path
@@ -25,6 +25,10 @@ class Settings:
 
     emb_dir_path: str
     emb_model_name: str
+    emb_device: str
+    reranker_dir_path: str
+    reranker_model_name: str
+    reranker_device: str
     config: dict
 
 
@@ -49,6 +53,10 @@ def get_settings():
 
     emb_dir_path = os.getenv("EMB_DIR_PATH")
     emb_model_name = os.getenv("EMB_MODEL_NAME")
+    emb_device = os.getenv("EMB_DEVICE")
+    reranker_dir_path = os.getenv("RERANKER_DIR_PATH")
+    reranker_model_name = os.getenv("RERANKER_MODEL_NAME")
+    reranker_device = os.getenv("RERANKER_DEVICE")
     config = {"configurable": {"thread_id": "user0"}}
 
     logger.info("配置加载成功")
@@ -70,5 +78,9 @@ def get_settings():
 
         emb_dir_path=emb_dir_path,
         emb_model_name=emb_model_name,
+        emb_device=emb_device,
+        reranker_dir_path=reranker_dir_path,
+        reranker_model_name=reranker_model_name,
+        reranker_device=reranker_device,
         config=config,
     )

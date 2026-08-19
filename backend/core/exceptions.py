@@ -10,6 +10,10 @@ class EmbeddingError(RAGError):
     pass
 
 
+class RerankerError(RAGError):
+    pass
+
+
 class RetrievalError(RAGError):
     pass
 

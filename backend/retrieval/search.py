@@ -25,9 +25,9 @@ def create_retrieve_tool(retriever):
             if not query.strip():
                 logger.debug("retrieve_context收到空query")
                 return "检索工具调用失败：query为空。请重新生成有效检索关键词。", []
-            docs = retriever.invoke(query)
+            docs = retriever.invoke(query, k=2)
             logger.info(f"retrieve_context返回结果数量={len(docs)}")
-            serialized = "\n\n".join(
+            serialized = "\n\n以下是调用工具retrieve_context返回的结果:\n\n".join(
                 f"""
             来源:
             {d.metadata.get("source")}
@@ -45,5 +45,3 @@ def create_retrieve_tool(retriever):
             return f"检索工具执行失败：{str(e)}。""请尝试其他方式回答用户。", []
 
     return retrieve_context
-
-

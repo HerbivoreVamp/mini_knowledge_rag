@@ -4,9 +4,12 @@
 
 ## 功能
 
-- 导入 Markdown 文档到 FAISS 向量库
-- 基于向量检索的智能问答
-- 对话记忆（SQLite 持久化）
+- Hierarchical Retrieval
+- Parent Document Retrieval
+- Vector Search + Reranker 二阶段检索
+- Agent Tool 调用知识库
+- 本地模型运行
+- SQLite 对话状态持久化
 
 ## 项目结构
 
@@ -18,7 +21,8 @@ backend/
 │   ├── settings.py          # 模型、路径等配置
 │   ├── model.py             # 模型工厂（Embedding + LLM）
 │   ├── prompts.py           # Prompt 模板
-│   └── embedding.py         # Embedding 模型配置
+│   ├── embedding.py         # Embedding 模型配置
+│   └── reranker.py          # Reranker 配置
 │
 ├── core/                    # 核心模块
 │   ├── utils.py             # 杂乱的小功能 目前只有删除记忆
@@ -36,7 +40,8 @@ backend/
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
 ├── retrieval/               # 检索模块
-│   └── search.py            # 检索工具封装
+│   ├── search.py            # 检索工具封装
+│   └── hierarchical.py      # 分层检索工具
 │
 ├── agent/                   # Agent 模块
 │   └── agent.py             # RAG Agent 创建
@@ -47,13 +52,13 @@ backend/
 │
 ├── data/                    # 数据目录
 │   ├── document/            # Markdown 知识文档
-│   ├── database/            # 向量库
+│   ├── database/            # 数据库
 │   └── memory/              # LangGraph 对话状态持久化
 └── logs/                    # 运行日志
 
 tests/
 ├── test_xxx                 # 各类单元测试
-└── ......
+└── ...
 ```
 
 ## 数据流
@@ -83,22 +88,50 @@ JsonDocStore        Embedding
 
 ```
 用户问题
-  │
+ |
 Agent
-  │
+ |
 Retriever Tool
-  │
-FAISS（child chunk 向量搜索）
-  │
-Parent Document (parent document lookup)
-  │
+ |
+FAISS Child Chunk Search
+ |
+Reranker
+ |
+Parent Document Lookup
+ |
 Context
-  │
+ |
 LLM
-  │
-Answer
 ```
+## Retrieval Pipeline
+```
+Indexing:
+Markdown
+ ↓
+Loader
+ ↓
+Parent/Child Split
+ ↓
+Embedding
+ ↓
+FAISS(child)
+ ↓
+JsonDocStore(parent)
 
+
+Query:
+Question
+ ↓
+Retriever
+ ↓
+FAISS similarity search
+ ↓
+Reranker
+ ↓
+Parent lookup
+ ↓
+LLM
+```
 对话状态通过 SQLite Checkpoint 持久化。
 
 ## 技术栈
@@ -116,7 +149,7 @@ Answer
 # 安装依赖
 pip install -r requirements.txt
 
-# 配置 .env 文件中的 embedding 模型路径和 LLM 参数
+# 配置 .env 文件中的 embedding 模型路径 rerank 模型路径 和 LLM 参数
 # 如果想调整读取文档的位置 可以配置config.settings的内容
 
 # 运行
@@ -126,8 +159,8 @@ python backend/main.py
 pytest
 ```
 
-按提示选择：1 导入文档 / 2 查询知识库 / 3 删除数据库。
-将 Markdown .md文件放入 data/document/ 目录后运行导入流程。
+按提示选择：1 导入文档 / 2 查询知识库 / 3 删除数据库和记忆 / 4 仅删除记忆。
+将 Markdown .md文件放入 data/document/ 目录后运行导入流程 支持嵌套文件夹。
 
 ## 环境
 
@@ -164,13 +197,10 @@ pytest
 - [x] 优化项目目录结构
 - [x] 增加 pytest 单元测试
 - [x] 修改vectorstore的创建和导入 文档的导入
-- [x] HierarchicalRetriever
-  - [x] ParentDocumentRetriever 集成
-  - [x] JsonDocStore 持久化
-  - [x] Parent/Child 文档检索流程
-  - [x] 异常处理完善
-  - [x] pytest测试完善
-- [ ] 完成Reranker
+- [x] 完成HierarchicalRetriever
+- [x] 完成Reranker
+  - [ ] 异常处理完成覆盖
+  - [ ] pytest测试完成覆盖
 - [ ] 完成hybridsearch
 - [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程

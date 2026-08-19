@@ -74,3 +74,16 @@ def split_text(
             print("metadata:", s.metadata)
 
     return splits
+
+
+def create_hierarchy_splitter(parent_chunk_size=2000,
+                              parent_chunk_overlap=200,
+                              child_chunk_size=400,
+                              child_chunk_overlap=50):
+    parent_splitter = create_text_splitter(chunk_size=parent_chunk_size, chunk_overlap=parent_chunk_overlap,
+                                           add_start_index=True)
+    child_splitter = create_text_splitter(chunk_size=child_chunk_size, chunk_overlap=child_chunk_overlap,
+                                          add_start_index=True)
+    return parent_splitter, child_splitter
+
+
