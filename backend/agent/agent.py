@@ -1,8 +1,8 @@
 from langchain.agents import create_agent
 
-from retrieval.search import create_retrieve_tool
-from core.logger import logger
-from core.exceptions import AgentError
+from backend.retrieval.search import create_retrieve_tool
+from backend.core.logger import logger
+from backend.core.exceptions import AgentError
 
 
 def create_rag_agent(llm, system_prompt, retriever, checkpointer):

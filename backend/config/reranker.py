@@ -2,17 +2,21 @@ from pathlib import Path
 
 from sentence_transformers import CrossEncoder
 
-from core.logger import logger
-from core.exceptions import RerankerError
+from backend.core.logger import logger
+from backend.core.exceptions import RerankerError
 
 
 class BGEReranker:
     def __init__(self, model_name_or_path: Path, device: str):
-        self.model = CrossEncoder(
-            model_name_or_path=str(model_name_or_path),
-            max_length=1024,
-            device=device
-        )
+        try:
+            self.model = CrossEncoder(
+                model_name_or_path=str(model_name_or_path),
+                max_length=1024,
+                device=device
+            )
+        except Exception as e:
+            logger.exception(f"BGEReranker创建失败 error={e}")
+            raise RerankerError("BGEReranker创建失败") from e
 
     def rerank(
             self,
@@ -20,21 +24,25 @@ class BGEReranker:
             docs,
             top_k=5
     ):
-        pairs = [
-            (
-                query,
-                doc.page_content
+        try:
+            pairs = [
+                (
+                    query,
+                    doc.page_content
+                )
+                for doc in docs
+            ]
+
+            scores = self.model.predict(pairs)
+
+            ranked = sorted(
+                zip(docs, scores),
+                key=lambda x: x[1],
+                reverse=True
             )
-            for doc in docs
-        ]
-
-        scores = self.model.predict(pairs)
-
-        ranked = sorted(
-            zip(docs, scores),
-            key=lambda x: x[1],
-            reverse=True
-        )
+        except Exception as e:
+            logger.exception(f"rerank操作失败 error={e}")
+            raise RerankerError("rerank操作失败") from e
 
         return [
             doc

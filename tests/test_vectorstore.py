@@ -1,8 +1,8 @@
 from pathlib import Path
 
 import pytest
-from storage.vectorstore import build_vectorstore, save_vectorstore, load_vectorstore, create_empty_vectorstore, add_documents, delete_vectorstore
-from core.exceptions import VectorStoreError, VectorStoreNotFoundError, VectorStoreDeleteError
+from backend.storage.vectorstore import build_vectorstore, save_vectorstore, load_vectorstore, create_empty_vectorstore, add_documents, delete_vectorstore
+from backend.core.exceptions import VectorStoreError, VectorStoreNotFoundError
 from langchain_core.documents import Document
 
 

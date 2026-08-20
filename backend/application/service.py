@@ -1,5 +1,5 @@
-from core.exceptions import GenerationError, RAGError
-from agent.agent import create_rag_agent
+from backend.core.exceptions import GenerationError, RAGError
+from backend.agent.agent import create_rag_agent
 from .chat import chat_generation
 
 

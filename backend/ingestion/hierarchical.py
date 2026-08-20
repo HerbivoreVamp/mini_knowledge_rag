@@ -1,7 +1,9 @@
 import uuid
 
-from storage.docstore import JsonDocStore
-from core.logger import logger
+from backend.storage.docstore import JsonDocStore
+from backend.storage.vectorstore import add_documents
+from backend.core.logger import logger
+from backend.core.exceptions import RAGError
 
 
 def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_splitter, child_splitter):
@@ -35,15 +37,21 @@ def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_split
         parent_items
     )
 
-    # 一次添加所有child
-    vectorstore.add_documents(
-        child_docs
-    )
-    logger.info(
-        "导入完成 parents=%s children=%s",
-        len(parent_items),
-        len(child_docs)
-    )
+    try:
+        # 一次添加所有child
+        add_documents(vectorstore=vectorstore, docs=child_docs)
+        logger.info(
+            "导入成功 parents=%s children=%s",
+            len(parent_items),
+            len(child_docs)
+        )
+    except RAGError as e:
+        logger.info(
+            "导入失败 parents=%s children=%s",
+            len(parent_items),
+            len(child_docs)
+        )
+        raise e
     return {
         "parents": len(parent_items),
         "children": len(child_docs)

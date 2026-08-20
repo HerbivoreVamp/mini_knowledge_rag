@@ -3,8 +3,8 @@
 from pathlib import Path
 from langchain_huggingface import HuggingFaceEmbeddings
 
-from core.logger import logger
-from core.exceptions import EmbeddingError
+from backend.core.logger import logger
+from backend.core.exceptions import EmbeddingError
 
 
 def embeddings(dir_path: Path, model_name: str, device: str = 'cpu'):

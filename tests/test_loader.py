@@ -1,13 +1,15 @@
 import pytest
-from ingestion.loader import load_md
-from core.exceptions import LoaderError
+from pathlib import Path
+
+from backend.ingestion.loader import load_md
+from backend.core.exceptions import LoaderError
 
 
 def test_missing_file(tmp_path):
     with pytest.raises(LoaderError):
         load_md(
             root_path=tmp_path,
-            dir_path="不存在的文件",
+            dir_path=Path("不存在的文件"),
             single_file=True
         )
 
@@ -19,7 +21,7 @@ def test_empty_file(tmp_path):
     with pytest.raises(LoaderError):
         load_md(
             root_path=tmp_path,
-            dir_path="empty.md",
+            dir_path=Path("empty.md"),
             single_file=True
         )
 
@@ -30,7 +32,7 @@ def test_load_markdown(tmp_path):
 
     docs = load_md(
         root_path=tmp_path,
-        dir_path="测试用md文件.md",
+        dir_path=Path("测试用md文件.md"),
         single_file=True
     )
 

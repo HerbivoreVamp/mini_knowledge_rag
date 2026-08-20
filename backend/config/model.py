@@ -2,9 +2,9 @@ from pathlib import Path
 
 from langchain.chat_models import init_chat_model
 from .reranker import BGEReranker, init_reranker_model
-from core.logger import logger
-from core.exceptions import LLMError
-from config.embedding import embeddings
+from backend.core.logger import logger
+from backend.core.exceptions import LLMError
+from backend.config.embedding import embeddings
 
 
 def create_embedding(settings):

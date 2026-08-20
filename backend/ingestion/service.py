@@ -3,11 +3,11 @@ from pathlib import Path
 from .loader import load_md
 from .hierarchical import ingest_documents
 from .splitter import create_hierarchy_splitter
-from core.exceptions import RAGError
-from config.reranker import BGEReranker
-from storage.docstore import create_docstore
-from storage.vectorstore import save_vectorstore, create_empty_vectorstore, add_documents
-from retrieval.hierarchical import HierarchicalRetriever
+from backend.core.exceptions import RAGError
+from backend.config.reranker import BGEReranker
+from backend.storage.docstore import create_docstore
+from backend.storage.vectorstore import save_vectorstore, create_empty_vectorstore
+from backend.retrieval.hierarchical import HierarchicalRetriever
 
 
 def ingestion_service(document_dir: str, folder, emb, vectorstore_dir: str, index_name, parent_store_dir: str,
@@ -41,7 +41,7 @@ def ingestion_service(document_dir: str, folder, emb, vectorstore_dir: str, inde
 
         save_vectorstore(
             vectorstore,
-            vectorstore_dir,
+            Path(vectorstore_dir),
             index_name,
         )
 

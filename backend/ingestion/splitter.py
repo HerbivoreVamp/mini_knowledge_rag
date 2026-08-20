@@ -1,8 +1,8 @@
 # 递归文本分块
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
-from core.logger import logger
-from core.exceptions import SplitError
+from backend.core.logger import logger
+from backend.core.exceptions import SplitError
 
 
 def create_text_splitter(chunk_size=800, chunk_overlap=100, add_start_index=True):
@@ -80,10 +80,14 @@ def create_hierarchy_splitter(parent_chunk_size=2000,
                               parent_chunk_overlap=200,
                               child_chunk_size=400,
                               child_chunk_overlap=50):
-    parent_splitter = create_text_splitter(chunk_size=parent_chunk_size, chunk_overlap=parent_chunk_overlap,
-                                           add_start_index=True)
-    child_splitter = create_text_splitter(chunk_size=child_chunk_size, chunk_overlap=child_chunk_overlap,
-                                          add_start_index=True)
+    try:
+        parent_splitter = create_text_splitter(chunk_size=parent_chunk_size, chunk_overlap=parent_chunk_overlap,
+                                               add_start_index=True)
+        child_splitter = create_text_splitter(chunk_size=child_chunk_size, chunk_overlap=child_chunk_overlap,
+                                              add_start_index=True)
+    except Exception as e:
+        logger.exception(f"hierarchy_splitter创建失败 error={e}")
+        raise SplitError("hierarchy_splitter创建失败") from e
     return parent_splitter, child_splitter
 
 

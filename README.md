@@ -14,9 +14,11 @@
 ## 项目结构
 
 ```
+main.py                      # 程序入口，交互式问答
+README.md
+requirements.txt             # 依赖
+pytest.ini                   # pytest配置
 backend/
-├── main.py                  # 程序入口，交互式问答
-│
 ├── config/                  # 项目配置
 │   ├── settings.py          # 模型、路径等配置
 │   ├── model.py             # 模型工厂（Embedding + LLM）
@@ -153,7 +155,7 @@ pip install -r requirements.txt
 # 如果想调整读取文档的位置 可以配置config.settings的内容
 
 # 运行
-python backend/main.py
+python main.py
 
 # 运行测试
 pytest
@@ -199,8 +201,8 @@ pytest
 - [x] 修改vectorstore的创建和导入 文档的导入
 - [x] 完成HierarchicalRetriever
 - [x] 完成Reranker
-  - [ ] 异常处理完成覆盖
-  - [ ] pytest测试完成覆盖
+  - [x] 异常处理完成覆盖
+  - [x] pytest测试完成覆盖
 - [ ] 完成hybridsearch
 - [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程

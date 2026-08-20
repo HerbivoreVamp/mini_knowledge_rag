@@ -1,6 +1,6 @@
 import pytest
-from ingestion.splitter import split_text
-from core.exceptions import SplitError
+from backend.ingestion.splitter import split_text
+from backend.core.exceptions import SplitError
 from random import randrange
 from langchain_core.documents import Document
 

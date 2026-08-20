@@ -1,11 +1,11 @@
 import json
 import pytest
 
-from storage.docstore import (
+from backend.storage.docstore import (
     JsonDocStore,
     create_docstore,
 )
-from core.exceptions import DocStoreError
+from backend.core.exceptions import DocStoreError
 from langchain_core.documents import Document
 
 

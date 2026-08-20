@@ -1,8 +1,8 @@
 from unittest.mock import MagicMock
 import pytest
 
-from retrieval.search import create_retrieve_tool
-from core.exceptions import RetrievalError
+from backend.retrieval.search import create_retrieve_tool
+from backend.core.exceptions import RetrievalError
 
 
 class FakeDoc:

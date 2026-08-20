@@ -1,16 +1,16 @@
 from langgraph.checkpoint.sqlite import SqliteSaver
 
-from config.settings import get_settings
-from config.prompts import SYSTEM_PROMPT
-from config.model import create_embedding, create_llm, create_reranker
-from ingestion.service import ingestion_service
-from retrieval.hierarchical import HierarchicalRetriever
-from storage.docstore import create_docstore
-from storage.vectorstore import load_vectorstore, delete_vectorstore
-from application.service import create_generation_service
-from core.logger import setup_logger
-from core.exceptions import RAGError
-from core.utils import clear_checkpoints
+from backend.config.settings import get_settings
+from backend.config.prompts import SYSTEM_PROMPT
+from backend.config.model import create_embedding, create_llm, create_reranker
+from backend.ingestion.service import ingestion_service
+from backend.retrieval.hierarchical import HierarchicalRetriever
+from backend.storage.docstore import create_docstore
+from backend.storage.vectorstore import load_vectorstore, delete_vectorstore
+from backend.application.service import create_generation_service
+from backend.core.logger import setup_logger
+from backend.core.exceptions import RAGError
+from backend.core.utils import clear_checkpoints
 
 logger = setup_logger()
 logger.info("程序启动")

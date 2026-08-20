@@ -2,8 +2,8 @@
 
 from langchain.tools import tool
 
-from core.logger import logger
-from core.exceptions import RetrievalError
+from backend.core.logger import logger
+from backend.core.exceptions import RetrievalError
 
 
 def create_retrieve_tool(retriever):
@@ -27,6 +27,17 @@ def create_retrieve_tool(retriever):
                 return "检索工具调用失败：query为空。请重新生成有效检索关键词。", []
             docs = retriever.invoke(query, k=2)
             logger.info(f"retrieve_context返回结果数量={len(docs)}")
+            for index, doc in enumerate(docs, start=1):
+                logger.info(
+                    "retrieve_context 返回文档 "
+                    "index=%d source=%s file_type=%s start_index=%s parent_id=%s",
+                    index,
+                    doc.metadata.get("source"),
+                    doc.metadata.get("file_type"),
+                    doc.metadata.get("start_index"),
+                    doc.metadata.get("parent_id"),
+                )
+
             serialized = "\n\n以下是调用工具retrieve_context返回的结果:\n\n".join(
                 f"""
             来源:
@@ -37,6 +48,7 @@ def create_retrieve_tool(retriever):
             """
                 for d in docs
             )
+
             return serialized, docs
 
         except Exception as e:

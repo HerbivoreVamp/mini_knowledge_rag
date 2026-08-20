@@ -4,8 +4,8 @@ from pathlib import Path
 from langchain_core.documents import Document
 from langchain_core.stores import BaseStore
 
-from core.logger import logger
-from core.exceptions import DocStoreError
+from backend.core.logger import logger
+from backend.core.exceptions import DocStoreError
 
 
 class JsonDocStore(BaseStore):
@@ -109,7 +109,7 @@ class JsonDocStore(BaseStore):
         for key in keys:
             item = self.data.get(key)
 
-            if item:
+            if item is not None:
                 result.append(
                     Document(
                         page_content=item["page_content"],

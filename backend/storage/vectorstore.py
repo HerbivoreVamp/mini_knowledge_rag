@@ -1,15 +1,14 @@
 # FAISS 构建/保存/加载
 import shutil
 from pathlib import Path
-from langchain_community.vectorstores import FAISS
-from langchain_core.documents import Document
-
-from core.logger import logger
-from core.exceptions import VectorStoreLoadError, VectorStoreNotFoundError, VectorStoreError, VectorStoreDeleteError
 
 import faiss
 from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
 from langchain_community.docstore.in_memory import InMemoryDocstore
+
+from backend.core.logger import logger
+from backend.core.exceptions import VectorStoreLoadError, VectorStoreNotFoundError, VectorStoreError, VectorStoreDeleteError
 
 
 def create_empty_vectorstore(embeddings):

@@ -1,9 +1,9 @@
 from langchain_classic.retrievers import ParentDocumentRetriever
 
 from .splitter import create_text_splitter
-from core.logger import logger
-from core.exceptions import RetrievalError
-from storage.docstore import JsonDocStore
+from backend.core.logger import logger
+from backend.core.exceptions import RetrievalError
+from backend.storage.docstore import JsonDocStore
 
 
 def create_parent_retriever(vectorstore, parent_store: JsonDocStore) -> ParentDocumentRetriever:

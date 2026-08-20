@@ -1,8 +1,8 @@
 # Agent 对话封装
 from langchain.messages import HumanMessage
 
-from core.logger import logger
-from core.exceptions import GenerationError
+from backend.core.logger import logger
+from backend.core.exceptions import GenerationError
 
 
 def chat_generation(agent, input_message, config):
