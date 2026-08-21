@@ -4,7 +4,7 @@ from backend.config.settings import get_settings
 from backend.config.prompts import SYSTEM_PROMPT
 from backend.config.model import create_embedding, create_llm, create_reranker
 from backend.ingestion.service import ingestion_service
-from backend.retrieval.hierarchical import HierarchicalRetriever
+from backend.retrieval.hierarchical_retriever import HierarchicalRetriever
 from backend.retrieval.search import search
 from backend.storage.docstore import create_docstore
 from backend.storage.vectorstore import load_vectorstore, delete_vectorstore
@@ -50,16 +50,16 @@ while True:
         print("功能1: 导入文档")
         folder = input("请输入文档文件夹名称:\n")
         try:
-            retriever = ingestion_service(document_dir=settings.document_dir,
-                                          folder=folder,
-                                          emb=emb,
-                                          vectorstore_dir=settings.vectorstore_dir,
-                                          index_name=settings.index_name,
-                                          parent_store_dir=settings.parent_store_dir,
-                                          vectorstore=vectorstore,
-                                          retriever=retriever,
-                                          reranker=reranker
-                                          )
+            retriever, vectorstore = ingestion_service(document_dir=settings.document_dir,
+                                                       folder=folder,
+                                                       emb=emb,
+                                                       vectorstore_dir=settings.vectorstore_dir,
+                                                       index_name=settings.index_name,
+                                                       parent_store_dir=settings.parent_store_dir,
+                                                       vectorstore=vectorstore,
+                                                       retriever=retriever,
+                                                       reranker=reranker
+                                                       )
         except RAGError:
             print(f"找不到对应文件夹{folder}")
             continue
@@ -100,7 +100,7 @@ while True:
         else:
             print("记忆不存在 无需删除")
     elif option == "5":
-        if not vectorstore or not retriever:
+        if (not vectorstore) or (not retriever):
             print("数据库不存在")
             print("请先导入文档")
             continue

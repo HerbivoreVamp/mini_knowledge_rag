@@ -41,9 +41,9 @@ backend/
 │   ├── docstore.py          # json格式存储parent文档
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
-├── retrieval/               # 检索模块
-│   ├── search.py            # 检索工具封装
-│   └── hierarchical.py      # 分层检索工具
+├── retrieval/                    # 检索模块
+│   ├── search.py                 # 检索工具封装
+│   └── hierarchical_retriever.py # 分层检索工具
 │
 ├── agent/                   # Agent 模块
 │   └── agent.py             # RAG Agent 创建

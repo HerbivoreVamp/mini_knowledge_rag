@@ -7,7 +7,7 @@ from backend.core.exceptions import RAGError
 from backend.config.reranker import BGEReranker
 from backend.storage.docstore import create_docstore
 from backend.storage.vectorstore import save_vectorstore, create_empty_vectorstore
-from backend.retrieval.hierarchical import HierarchicalRetriever
+from backend.retrieval.hierarchical_retriever import HierarchicalRetriever
 
 
 def ingestion_service(document_dir: str, folder, emb, vectorstore_dir: str, index_name, parent_store_dir: str,
@@ -49,4 +49,4 @@ def ingestion_service(document_dir: str, folder, emb, vectorstore_dir: str, inde
     except RAGError as e:
         raise e
 
-    return retriever
+    return retriever, vectorstore

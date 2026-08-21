@@ -5,10 +5,10 @@ from langchain_core.documents import Document
 
 from backend.core.logger import logger
 from backend.core.exceptions import RetrievalError
-from backend.retrieval.hierarchical import HierarchicalRetriever
+from backend.retrieval.hierarchical_retriever import HierarchicalRetriever
 
 
-def search(query: str, retriever: HierarchicalRetriever, k=2) -> [Document]:
+def search(query: str, retriever: HierarchicalRetriever, k=2) -> list[Document]:
     try:
         logger.info(
             "search检索知识库 query=%s",
@@ -17,8 +17,9 @@ def search(query: str, retriever: HierarchicalRetriever, k=2) -> [Document]:
         if not query.strip():
             logger.debug("search收到空query")
             raise RetrievalError("search检索知识库失败：query为空。")
-        docs = retriever.invoke(query, rerank_k=k)
-        logger.info(f"查询数量rerank_k={k}" f"search返回结果数量={len(docs)}")
+        retriever.rerank_k = k
+        docs = retriever.invoke(query)
+        logger.info(f"查询数量rerank_k={k} search返回结果数量={len(docs)}")
         for index, doc in enumerate(docs, start=1):
             logger.info(
                 "search 检索得到的知识库文档 "
@@ -51,7 +52,7 @@ def create_retrieve_tool(retriever):
                 "模型调用retrieve_context工具 query=%s",
                 query
             )
-            docs = search(query, retriever)
+            docs = search(query, retriever, k=2)
 
         except Exception as e:
             logger.exception("retrieve_context工具执行失败")

@@ -18,3 +18,4 @@ sentence-transformers==5.6.1
 python-dotenv==1.2.2
 pyyaml~=6.0.3
 pytest~=9.1.1
+pydantic~=2.13.4
