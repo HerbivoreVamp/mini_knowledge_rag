@@ -5,6 +5,7 @@ from backend.config.prompts import SYSTEM_PROMPT
 from backend.config.model import create_embedding, create_llm, create_reranker
 from backend.ingestion.service import ingestion_service
 from backend.retrieval.hierarchical import HierarchicalRetriever
+from backend.retrieval.search import search
 from backend.storage.docstore import create_docstore
 from backend.storage.vectorstore import load_vectorstore, delete_vectorstore
 from backend.application.service import create_generation_service
@@ -40,6 +41,7 @@ print("1. 导入文档到数据库")
 print("2. 查询知识库")
 print("3. 删除数据库并删除记忆")
 print("4. 仅删除记忆")
+print("5. 手动查询知识库")
 print("exit : 退出")
 
 while True:
@@ -93,8 +95,22 @@ while True:
             continue
         clear_checkpoints(settings.memory_dir / "checkpoints.db")
     elif option == "4":
-        clear_checkpoints(settings.memory_dir / "checkpoints.db")  # 删除记忆
-        print("记忆已删除")
+        if clear_checkpoints(settings.memory_dir / "checkpoints.db"):  # 删除记忆
+            print("记忆已删除")
+        else:
+            print("记忆不存在 无需删除")
+    elif option == "5":
+        if not vectorstore or not retriever:
+            print("数据库不存在")
+            print("请先导入文档")
+            continue
+        docs = []
+        try:
+            docs = search(retriever=retriever, query=input("输入检索关键词"), k=int(input("输入检索返回的数量")))
+        except RAGError as e:
+            print(f"检索出错 error={e}")
+        for doc in docs:
+            print(f"""来源:{doc.metadata.get("source")}\n内容:{doc.page_content}\n""")
     elif option in ("exit", "退出"):
         logger.info(f"用户手动退出")
         print("退出中...")

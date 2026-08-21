@@ -7,7 +7,7 @@ from langchain_core.stores import BaseStore
 from backend.core.logger import logger
 from backend.core.exceptions import DocStoreError
 
-
+# 临时使用 未来更换为sqlite
 class JsonDocStore(BaseStore):
     def __init__(self, parent_store_dir):
         self.parent_store_dir = Path(parent_store_dir)

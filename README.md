@@ -141,7 +141,7 @@ LLM
 - **框架**:LangChain + LangGraph
 - **Embedding**: BAAI/bge-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
-- **Retriever**: LangChain ParentDocumentRetriever
+- **Retriever**: 自定义 HierarchicalRetriever（FAISS 向量检索 + Reranker 重排序 + Parent Document 查找）
 - **LLM**: LangChain ChatModel（支持 OpenAI Compatible API）
 - **记忆**: SQLite (LangGraph Checkpoint)
 

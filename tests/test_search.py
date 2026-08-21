@@ -40,7 +40,7 @@ def test_retrieve_context_success():
     assert "test.md" in result
 
     fake_retriever.invoke.assert_called_once_with(
-        "测试问题",
+        "测试问题", k=2
     )
 
 

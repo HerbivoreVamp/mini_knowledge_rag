@@ -31,7 +31,7 @@ class HierarchicalRetriever:
             logger.exception(f"HierarchicalRetriever创建失败 error={e}")
             raise RetrievalError("HierarchicalRetriever创建失败") from e
 
-    def invoke(self, query, k=5):
+    def invoke(self, query, rerank_k=5):
         try:
             # 1. child召回
             child_docs = self.child_retriever.invoke(query)
@@ -43,7 +43,7 @@ class HierarchicalRetriever:
             child_docs = self.reranker.rerank(
                 query,
                 child_docs,
-                top_k=k
+                top_k=rerank_k
             )
         except Exception as e:
             logger.exception(f"rerank阶段出错 error={e}")
