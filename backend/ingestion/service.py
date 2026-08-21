@@ -37,7 +37,8 @@ def ingestion_service(document_dir: str, folder, emb, vectorstore_dir: str, inde
             retriever = HierarchicalRetriever(vectorstore=vectorstore,
                                               parent_store=parent_docstore,
                                               reranker=reranker,
-                                              k=30
+                                              k=30,
+                                              rerank_k=5
                                               )
 
         save_vectorstore(

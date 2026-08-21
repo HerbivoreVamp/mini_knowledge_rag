@@ -69,6 +69,8 @@ def test_ingestion_service(mocker, tmp_path):
         vectorstore=mock_vectorstore,
         parent_store=mock_docstore,
         reranker=mock_reranker,
+        k=30,
+        rerank_k=5,
     )
     assert mock_save.call_count == 2
-    assert result == mock_retriever
+    assert result == (mock_retriever, mock_vectorstore)
