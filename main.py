@@ -4,7 +4,7 @@ from backend.config.settings import get_settings
 from backend.config.prompts import SYSTEM_PROMPT
 from backend.config.model import create_embedding, create_llm, create_reranker
 from backend.ingestion.service import ingestion_service
-from backend.retrieval.hierarchical_retriever import HierarchicalRetriever
+from backend.retrieval.factory import create_retriever
 from backend.retrieval.search import search
 from backend.storage.docstore import create_docstore
 from backend.storage.vectorstore import load_vectorstore, delete_vectorstore
@@ -24,12 +24,14 @@ llm = create_llm(settings)
 # --- 向量库加载 ---
 try:
     vectorstore = load_vectorstore(settings.vectorstore_dir, emb, settings.index_name)
-    retriever = HierarchicalRetriever(vectorstore=vectorstore,
-                                      parent_store=create_docstore(settings.parent_store_dir),
-                                      reranker=reranker
-                                      )
+    retriever = create_retriever(vectorstore=vectorstore,
+                                 parent_store=create_docstore(settings.parent_store_dir),
+                                 reranker=reranker,
+                                 hierarchical=True,
+                                 norm_k=30,
+                                 rerank_topk=5)
     logger.info(f"vectorstore导入成功 path={settings.vectorstore_dir}")
-    logger.info(f"retriever导入成功 path={settings.parent_store_dir}")
+    logger.info("HierarchicalRetriever创建成功")
 except RAGError as e:
     print(e)
     vectorstore = None
@@ -50,12 +52,9 @@ while True:
         print("功能1: 导入文档")
         folder = input("请输入文档文件夹名称:\n")
         try:
-            retriever, vectorstore = ingestion_service(document_dir=settings.document_dir,
+            retriever, vectorstore = ingestion_service(settings,
                                                        folder=folder,
                                                        emb=emb,
-                                                       vectorstore_dir=settings.vectorstore_dir,
-                                                       index_name=settings.index_name,
-                                                       parent_store_dir=settings.parent_store_dir,
                                                        vectorstore=vectorstore,
                                                        retriever=retriever,
                                                        reranker=reranker
@@ -106,7 +105,7 @@ while True:
             continue
         docs = []
         try:
-            docs = search(retriever=retriever, query=input("输入检索关键词"), k=int(input("输入检索返回的数量")))
+            docs = search(retriever=retriever, query=input("输入检索关键词"))
         except RAGError as e:
             print(f"检索出错 error={e}")
         for doc in docs:

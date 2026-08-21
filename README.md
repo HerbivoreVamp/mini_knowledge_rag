@@ -6,7 +6,7 @@
 
 - Hierarchical Retrieval
 - Parent Document Retrieval
-- Vector Search + Reranker 二阶段检索
+- 三阶段检索链（向量检索 → Rerank → Parent 扩展）
 - Agent Tool 调用知识库
 - 本地模型运行
 - SQLite 对话状态持久化
@@ -35,15 +35,18 @@ backend/
 │   ├── service.py           # 导入流程编排（load → parent_retriever → embed → save）
 │   ├── loader.py            # Markdown 文档加载
 │   ├── splitter.py          # 文本切分
-│   └── hierarchical.py      # ParentDocumentRetriever 分层检索
+│   └── hierarchical.py      # 文档分层导入（parent/child split + embed）
 │
 ├── storage/                 # 存储模块
 │   ├── docstore.py          # json格式存储parent文档
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
 ├── retrieval/                    # 检索模块
-│   ├── search.py                 # 检索工具封装
-│   └── hierarchical_retriever.py # 分层检索工具
+│   ├── factory.py                # 检索器组装工厂（Normal → Rerank → Hierarchical）
+│   ├── normal_retriever.py       # 基础向量检索器（VectorStore 封装）
+│   ├── rerank_retriever.py       # 重排序检索器（装饰器模式）
+│   ├── hierarchical_retriever.py # 分层检索器（child → parent 扩展）
+│   └── search.py                 # 检索工具封装（LangChain Tool）
 │
 ├── agent/                   # Agent 模块
 │   └── agent.py             # RAG Agent 创建
@@ -72,7 +75,7 @@ tests/
       │
     Loader
       │
-ParentDocumentRetriever
+ingest_documents (parent/child split)
       │
       ├────────────────+
       │                │
@@ -95,11 +98,11 @@ Agent
  |
 Retriever Tool
  |
-FAISS Child Chunk Search
+NormalRetriever (FAISS Child Chunk Search)
  |
-Reranker
+RerankRetriever (Reranker 重排序)
  |
-Parent Document Lookup
+HierarchicalRetriever (Parent Document Lookup)
  |
 Context
  |
@@ -124,13 +127,11 @@ JsonDocStore(parent)
 Query:
 Question
  ↓
-Retriever
+NormalRetriever (FAISS similarity search)
  ↓
-FAISS similarity search
+RerankRetriever (BGE Reranker)
  ↓
-Reranker
- ↓
-Parent lookup
+HierarchicalRetriever (Parent lookup)
  ↓
 LLM
 ```
@@ -141,7 +142,7 @@ LLM
 - **框架**:LangChain + LangGraph
 - **Embedding**: BAAI/bge-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
-- **Retriever**: 自定义 HierarchicalRetriever（FAISS 向量检索 + Reranker 重排序 + Parent Document 查找）
+- **Retriever**: NormalRetriever + RerankRetriever + HierarchicalRetriever 三阶段检索链
 - **LLM**: LangChain ChatModel（支持 OpenAI Compatible API）
 - **记忆**: SQLite (LangGraph Checkpoint)
 
@@ -201,8 +202,7 @@ pytest
 - [x] 修改vectorstore的创建和导入 文档的导入
 - [x] 完成HierarchicalRetriever
 - [x] 完成Reranker
-  - [x] 异常处理完成覆盖
-  - [x] pytest测试完成覆盖
+- [x] 完成Retriever模块化 为hybridsearch准备
 - [ ] 完成hybridsearch
 - [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程

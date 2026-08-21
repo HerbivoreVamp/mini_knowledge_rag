@@ -3,7 +3,17 @@ import pytest
 from backend.ingestion.service import ingestion_service
 
 
+class FakeSettings:
+    def __init__(self, tmp_path):
+        self.document_dir = str(tmp_path / "docs")
+        self.vectorstore_dir = str(tmp_path / "vectorstore")
+        self.index_name = "test_index"
+        self.parent_store_dir = str(tmp_path / "parent_store")
+
+
 def test_ingestion_service(mocker, tmp_path):
+    settings = FakeSettings(tmp_path)
+
     mock_docstore = mocker.MagicMock()
     mock_create_docstore = mocker.patch(
         "backend.ingestion.service.create_docstore",
@@ -37,24 +47,21 @@ def test_ingestion_service(mocker, tmp_path):
     )
 
     mock_retriever = mocker.MagicMock()
-    mock_HierarchicalRetriever = mocker.patch(
-        "backend.ingestion.service.HierarchicalRetriever",
+    mock_create_retriever = mocker.patch(
+        "backend.ingestion.service.create_retriever",
         return_value=mock_retriever
     )
 
     mock_reranker = mocker.MagicMock()
 
     result = ingestion_service(
-        str(tmp_path),
+        settings,
         "document",
         "fake_embedding",
-        str(tmp_path),
-        "test_index",
-        str(tmp_path),
         mock_reranker,
     )
 
-    mock_create_docstore.assert_called_once()
+    assert mock_create_docstore.call_count == 2
     mock_create_empty_vectorstore.assert_called_once_with("fake_embedding")
     mock_load.assert_called_once()
     mock_create_hierarchy_splitter.assert_called_once()
@@ -65,12 +72,13 @@ def test_ingestion_service(mocker, tmp_path):
         parent_splitter=mock_parent_splitter,
         child_splitter=mock_child_splitter,
     )
-    mock_HierarchicalRetriever.assert_called_once_with(
+    mock_create_retriever.assert_called_once_with(
         vectorstore=mock_vectorstore,
-        parent_store=mock_docstore,
+        parent_store=mocker.ANY,
         reranker=mock_reranker,
-        k=30,
-        rerank_k=5,
+        hierarchical=True,
+        norm_k=30,
+        rerank_topk=5,
     )
     assert mock_save.call_count == 2
     assert result == (mock_retriever, mock_vectorstore)

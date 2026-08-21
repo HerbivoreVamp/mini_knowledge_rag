@@ -2,27 +2,25 @@
 
 from langchain.tools import tool
 from langchain_core.documents import Document
+from langchain_core.retrievers import BaseRetriever
 
 from backend.core.logger import logger
 from backend.core.exceptions import RetrievalError
-from backend.retrieval.hierarchical_retriever import HierarchicalRetriever
 
 
-def search(query: str, retriever: HierarchicalRetriever, k=2) -> list[Document]:
+def search(query: str, retriever: BaseRetriever) -> list[Document]:
     try:
-        logger.info(
-            "search检索知识库 query=%s",
-            query
-        )
+        logger.info("search检索知识库 query=%s", query)
+
         if not query.strip():
-            logger.debug("search收到空query")
-            raise RetrievalError("search检索知识库失败：query为空。")
-        retriever.rerank_k = k
+            raise RetrievalError("search检索知识库失败：query为空")
+
         docs = retriever.invoke(query)
-        logger.info(f"查询数量rerank_k={k} search返回结果数量={len(docs)}")
+        logger.info(f"search返回结果数量={len(docs)}")
+
         for index, doc in enumerate(docs, start=1):
             logger.info(
-                "search 检索得到的知识库文档 "
+                "search 检索得到知识库文档 "
                 "index=%d source=%s file_type=%s start_index=%s parent_id=%s",
                 index,
                 doc.metadata.get("source"),
@@ -30,10 +28,15 @@ def search(query: str, retriever: HierarchicalRetriever, k=2) -> list[Document]:
                 doc.metadata.get("start_index"),
                 doc.metadata.get("parent_id"),
             )
+
+        return docs
+
+    except RetrievalError:
+        raise
+
     except Exception as e:
         logger.exception("search检索知识库失败")
         raise RetrievalError(f"search检索知识库失败：error={str(e)}") from e
-    return docs
 
 
 def create_retrieve_tool(retriever):
@@ -52,7 +55,7 @@ def create_retrieve_tool(retriever):
                 "模型调用retrieve_context工具 query=%s",
                 query
             )
-            docs = search(query, retriever, k=2)
+            docs = search(query, retriever,)
 
         except Exception as e:
             logger.exception("retrieve_context工具执行失败")
