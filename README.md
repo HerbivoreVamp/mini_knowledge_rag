@@ -222,7 +222,6 @@ pytest
 - [x] 完成Retriever模块化 为hybridsearch准备
 - [x] 完成hybridsearch
 - [x] SqliteDocStore 替代 JsonDocStore，parent/child 文档独立 SQLite 存储
-- [x] BM25 语料从 child_store 读取，不依赖 FAISS 内部 docstore
 - [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测
