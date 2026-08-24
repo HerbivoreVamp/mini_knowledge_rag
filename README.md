@@ -27,7 +27,7 @@ backend/
 │   └── reranker.py          # Reranker 配置
 │
 ├── core/                    # 核心模块
-│   ├── utils.py             # 杂乱的小功能 目前只有删除记忆
+│   ├── utils.py             # 通用工具函数
 │   ├── exceptions.py        # 统一异常定义
 │   └── logger.py            # 日志配置
 │
@@ -177,7 +177,7 @@ pytest
 - 使用 Agent Tool 动态调用知识库
 - SQLite 持久化保存对话状态
 - 统一异常处理（RAGError 异常体系）
-- 完整日志记录
+- 完善的日志记录
 - 支持基于配置切换不同知识库索引，每个知识库独立维护 FAISS 向量索引和 Parent Document 存储
 ## Logging
 
@@ -190,7 +190,7 @@ pytest
 - Agent 工具调用
 - 模型生成过程
 
-日志默认输出到控制台（或 logs 文件夹）。
+日志同时支持控制台输出和文件滚动记录。
 
 ## 下一步工作 
 - [x] 配置系统重构
