@@ -6,7 +6,7 @@ from backend.config.model import create_embedding, create_llm, create_reranker
 from backend.ingestion.service import ingestion_service
 from backend.retrieval.factory import create_retriever
 from backend.retrieval.search import search
-from backend.storage.docstore import create_docstore
+from backend.storage.sqlite_docstore import create_sqlite_docstore
 from backend.storage.vectorstore import load_vectorstore, delete_vectorstore
 from backend.application.service import create_generation_service
 from backend.core.logger import setup_logger
@@ -26,7 +26,8 @@ try:
     vectorstore = load_vectorstore(settings.vectorstore_dir, emb, settings.index_name)
     retriever = create_retriever(
         vectorstore=vectorstore,
-        parent_store=create_docstore(settings.parent_store_dir),
+        parent_store=create_sqlite_docstore(settings.parent_store_dir),
+        child_store=create_sqlite_docstore(settings.child_store_dir),
         reranker=reranker,
     )
     logger.info(f"vectorstore导入成功 path={settings.vectorstore_dir}")
@@ -84,6 +85,12 @@ while True:
                     continue
     elif option == "3":
         print("功能3: 删除数据库并删除记忆")
+        # 关闭 retriever 持有的 sqlite 连接 释放文件锁
+        if retriever is not None and hasattr(retriever, "parent_store"):
+            try:
+                retriever.parent_store.close()
+            except Exception as e:
+                logger.warning(f"关闭 parent_store 失败 error={e}")
         try:
             delete_vectorstore(settings.database_dir, settings.database_name)
             vectorstore = None

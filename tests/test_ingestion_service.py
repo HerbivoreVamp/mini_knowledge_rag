@@ -9,6 +9,7 @@ class FakeSettings:
         self.vectorstore_dir = str(tmp_path / "vectorstore")
         self.index_name = "test_index"
         self.parent_store_dir = str(tmp_path / "parent_store")
+        self.child_store_dir = str(tmp_path / "child_store")
 
 
 def test_ingestion_service(mocker, tmp_path):
@@ -16,7 +17,7 @@ def test_ingestion_service(mocker, tmp_path):
 
     mock_docstore = mocker.MagicMock()
     mock_create_docstore = mocker.patch(
-        "backend.ingestion.service.create_docstore",
+        "backend.ingestion.service.create_sqlite_docstore",
         return_value=mock_docstore
     )
 
@@ -61,7 +62,7 @@ def test_ingestion_service(mocker, tmp_path):
         mock_reranker,
     )
 
-    assert mock_create_docstore.call_count == 2
+    assert mock_create_docstore.call_count == 3
     mock_create_empty_vectorstore.assert_called_once_with("fake_embedding")
     mock_load.assert_called_once()
     mock_create_hierarchy_splitter.assert_called_once()
@@ -69,17 +70,15 @@ def test_ingestion_service(mocker, tmp_path):
         docs=["doc"],
         vectorstore=mock_vectorstore,
         parent_store=mock_docstore,
+        child_store=mock_docstore,
         parent_splitter=mock_parent_splitter,
         child_splitter=mock_child_splitter,
     )
     mock_create_retriever.assert_called_once_with(
         vectorstore=mock_vectorstore,
         parent_store=mocker.ANY,
+        child_store=mocker.ANY,
         reranker=mock_reranker,
-        hierarchical=True,
-        hybrid=True,
-        k=30,
-        rerank_topk=5,
     )
     assert mock_save.call_count == 2
     assert result == (mock_retriever, mock_vectorstore)

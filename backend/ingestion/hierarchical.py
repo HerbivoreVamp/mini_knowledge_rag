@@ -2,13 +2,13 @@ import uuid
 
 from .utils import create_chunk_id
 
-from backend.storage.docstore import JsonDocStore
+from backend.storage.sqlite_docstore import SqliteDocStore
 from backend.storage.vectorstore import add_documents
 from backend.core.logger import logger
 from backend.core.exceptions import RAGError
 
 
-def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_splitter, child_splitter):
+def ingest_documents(docs, vectorstore, parent_store: SqliteDocStore, child_store, parent_splitter, child_splitter):
     parents = parent_splitter.split_documents(
         docs
     )
@@ -25,7 +25,8 @@ def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_split
         )
 
         for child in children:
-            child.metadata["chunk_id"] = create_chunk_id(child)
+            chunk_id = create_chunk_id(child)
+            child.metadata["chunk_id"] = chunk_id
             child.metadata["parent_id"] = parent_id
 
         child_docs.extend(children)
@@ -38,6 +39,12 @@ def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_split
     parent_store.mset(
         parent_items
     )
+
+    # child 文档存入 child_store 用于 BM25 语料
+    if child_store is not None and child_docs:
+        child_store.mset(
+            [(child.metadata["chunk_id"], child) for child in child_docs]
+        )
 
     try:
         # 一次添加所有child

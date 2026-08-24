@@ -3,21 +3,21 @@ from typing import TYPE_CHECKING
 from langchain_core.retrievers import BaseRetriever
 from langchain_core.documents import Document
 
-from backend.storage.docstore import JsonDocStore
+from backend.storage.sqlite_docstore import SqliteDocStore
 from backend.core.exceptions import RetrievalError
 from backend.core.logger import logger
 
 
 class HierarchicalRetriever(BaseRetriever):
     child_retriever: BaseRetriever
-    parent_store: JsonDocStore
+    parent_store: SqliteDocStore
     parent_k: int
     if TYPE_CHECKING:  # 方便显示参数 没有实际运行
         def __init__(
                 self,
                 *,
                 child_retriever: BaseRetriever,
-                parent_store: JsonDocStore,
+                parent_store: SqliteDocStore,
                 parent_k: int,
         ):
             ...
@@ -28,7 +28,7 @@ class HierarchicalRetriever(BaseRetriever):
             parent_id = child.metadata.get("parent_id")
             if parent_id and parent_id not in parent_ids:
                 parent_ids.append(parent_id)
-        logger.info(f"child_docs已传入HierarchicalRetriever total_child={len(child_docs)}")
+        logger.info(f"HierarchicalRetriever已检索到parent parent={len(parent_ids)} child={len(child_docs)}")
         return self.parent_store.mget(parent_ids)
 
     def _get_relevant_documents(self, query: str, *, run_manager=None) -> list[Document]:

@@ -17,6 +17,7 @@ class Settings:
     index_name: str
     vectorstore_dir: Path
     parent_store_dir: Path
+    child_store_dir: Path
 
     model: str
     model_provider: str
@@ -45,6 +46,7 @@ def get_settings():
     index_name = "index"
     vectorstore_dir = database_dir / database_name / "vectorstore"
     parent_store_dir = database_dir / database_name / "parent_store"
+    child_store_dir = database_dir / database_name / "child_store"
 
     model = os.getenv("MODEL")
     api_key = os.getenv("API_KEY")
@@ -70,6 +72,7 @@ def get_settings():
         index_name=index_name,
         vectorstore_dir=vectorstore_dir,
         parent_store_dir=parent_store_dir,
+        child_store_dir=child_store_dir,
 
         model=model,
         api_key=api_key,

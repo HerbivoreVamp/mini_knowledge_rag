@@ -220,3 +220,50 @@ def test_create_retriever_dense_retriever_fails(mocker):
             vectorstore=_make_vectorstore(mocker),
             parent_store=mocker.Mock(),
         )
+
+
+def test_create_retriever_child_store_source(mocker, tmp_path):
+    from langchain_core.documents import Document
+    from backend.storage.sqlite_docstore import SqliteDocStore
+
+    child_docs = [
+        Document(page_content="child1", metadata={"chunk_id": "c1"}),
+        Document(page_content="child2", metadata={"chunk_id": "c2"}),
+    ]
+    child_store = SqliteDocStore(tmp_path / "child")
+    child_store.mset([("c1", child_docs[0]), ("c2", child_docs[1])])
+
+    vectorstore = _make_vectorstore(mocker, docs=[])
+    parent_store = mocker.Mock()
+    reranker = mocker.Mock()
+
+    mock_dense = mocker.Mock()
+    mock_sparse = mocker.Mock()
+    mock_hybrid = mocker.Mock()
+    mock_rerank = mocker.Mock()
+    mock_hierarchical = mocker.Mock()
+
+    mocker.patch("backend.retrieval.factory.DenseRetriever", return_value=mock_dense)
+    mock_BM25Retriever = mocker.patch("backend.retrieval.factory.BM25Retriever")
+    mock_BM25Retriever.from_documents.return_value = mock_sparse
+    mocker.patch("backend.retrieval.factory.HybridRetriever", return_value=mock_hybrid)
+    mocker.patch("backend.retrieval.factory.RerankRetriever", return_value=mock_rerank)
+    mocker.patch("backend.retrieval.factory.HierarchicalRetriever", return_value=mock_hierarchical)
+
+    # 用 spy 监控 close 调用
+    close_spy = mocker.patch.object(child_store, "close", wraps=child_store.close)
+
+    create_retriever(
+        vectorstore=vectorstore,
+        parent_store=parent_store,
+        child_store=child_store,
+        reranker=reranker,
+    )
+
+    # BM25 语料来自 child_store 的文档
+    called_docs = mock_BM25Retriever.from_documents.call_args[0][0]
+    assert len(called_docs) == 2
+    contents = {d.page_content for d in called_docs}
+    assert contents == {"child1", "child2"}
+    # child_store 用完关闭
+    close_spy.assert_called_once()

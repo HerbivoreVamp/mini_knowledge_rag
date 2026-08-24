@@ -22,7 +22,7 @@ def test_ingest_documents_success(mocker, tmp_path):
 
     docs = [Document(page_content="test content", metadata={"source": "test.md"})]
 
-    result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
+    result = ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, child_splitter)
 
     assert result["parents"] == 1
     assert result["children"] == 1
@@ -43,7 +43,7 @@ def test_ingest_documents_multiple_docs(mocker, tmp_path):
         Document(page_content="doc3", metadata={"source": "test.md"}),
     ]
 
-    result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
+    result = ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, child_splitter)
 
     assert result["parents"] == 3
     assert result["children"] == 3
@@ -66,7 +66,7 @@ def test_ingest_documents_parent_splitter_produces_multiple(mocker, tmp_path):
 
     docs = [Document(page_content="original", metadata={"source": "test.md"})]
 
-    result = ingest_documents(docs, vectorstore, parent_store, MultiParentSplitter(), child_splitter)
+    result = ingest_documents(docs, vectorstore, parent_store, None, MultiParentSplitter(), child_splitter)
 
     assert result["parents"] == 2
     assert result["children"] == 2
@@ -89,7 +89,7 @@ def test_ingest_documents_child_splitter_produces_multiple(mocker, tmp_path):
 
     docs = [Document(page_content="original", metadata={"source": "test.md"})]
 
-    result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, MultiChildSplitter())
+    result = ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, MultiChildSplitter())
 
     assert result["parents"] == 1
     assert result["children"] == 3
@@ -102,7 +102,7 @@ def test_ingest_documents_empty_docs(mocker, tmp_path):
         parent_splitter = FakeSplitter()
         child_splitter = FakeSplitter()
 
-        result = ingest_documents([], vectorstore, parent_store, parent_splitter, child_splitter)
+        result = ingest_documents([], vectorstore, parent_store, None, parent_splitter, child_splitter)
 
 
 def test_ingest_documents_parent_id_assigned(mocker, tmp_path):
@@ -115,7 +115,7 @@ def test_ingest_documents_parent_id_assigned(mocker, tmp_path):
 
     docs = [Document(page_content="test", metadata={"source": "test.md"})]
 
-    result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
+    result = ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, child_splitter)
 
     # 验证 parent_store 中保存的 parent 有 parent_id
     keys = list(parent_store.yield_keys())
@@ -135,7 +135,7 @@ def test_ingest_documents_child_has_parent_id(mocker, tmp_path):
 
     docs = [Document(page_content="test", metadata={"source": "test.md"})]
 
-    ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
+    ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, child_splitter)
 
     # 验证 add_documents 被调用时传入的 child 有 parent_id
     called_docs = vectorstore.add_documents.call_args[0][0]
@@ -155,4 +155,43 @@ def test_ingest_documents_add_documents_failure(mocker, tmp_path):
     docs = [Document(page_content="test", metadata={"source": "test.md"})]
 
     with pytest.raises(RAGError):
-        ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
+        ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, child_splitter)
+
+
+def test_ingest_documents_child_store_populated(mocker, tmp_path):
+    from backend.storage.sqlite_docstore import SqliteDocStore
+
+    parent_store = SqliteDocStore(tmp_path / "parent")
+    child_store = SqliteDocStore(tmp_path / "child")
+    vectorstore = mocker.Mock()
+    parent_splitter = FakeSplitter()
+    child_splitter = FakeSplitter()
+
+    docs = [Document(page_content="test content", metadata={"source": "test.md"})]
+
+    ingest_documents(docs, vectorstore, parent_store, child_store, parent_splitter, child_splitter)
+
+    assert child_store.count() == 1
+    keys = list(child_store.yield_keys())
+    assert len(keys) == 1
+    child_doc = child_store.mget(keys)[0]
+    assert child_doc.page_content == "test content"
+    assert "chunk_id" in child_doc.metadata
+    assert child_doc.metadata["chunk_id"] == keys[0]
+    child_store.close()
+    parent_store.close()
+
+
+def test_ingest_documents_child_store_none_skips(mocker, tmp_path):
+    from backend.storage.docstore import JsonDocStore
+
+    parent_store = JsonDocStore(tmp_path)
+    vectorstore = mocker.Mock()
+    parent_splitter = FakeSplitter()
+    child_splitter = FakeSplitter()
+
+    docs = [Document(page_content="test", metadata={"source": "test.md"})]
+
+    result = ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, child_splitter)
+
+    assert result["children"] == 1

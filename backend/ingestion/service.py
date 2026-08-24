@@ -6,7 +6,7 @@ from .splitter import create_hierarchy_splitter
 from backend.config.settings import Settings
 from backend.core.exceptions import RAGError
 from backend.config.reranker import BGEReranker
-from backend.storage.docstore import create_docstore
+from backend.storage.sqlite_docstore import create_sqlite_docstore
 from backend.storage.vectorstore import save_vectorstore, create_empty_vectorstore
 from backend.retrieval.factory import create_retriever
 
@@ -17,8 +17,10 @@ def ingestion_service(settings: Settings, folder, emb, reranker: BGEReranker, ve
         vectorstore_dir = settings.vectorstore_dir
         index_name = settings.index_name
         parent_store_dir = settings.parent_store_dir
+        child_store_dir = settings.child_store_dir
 
-        parent_docstore = create_docstore(Path(parent_store_dir))
+        parent_docstore = create_sqlite_docstore(Path(parent_store_dir))
+        child_docstore = create_sqlite_docstore(Path(child_store_dir))
         if vectorstore is None:
             vectorstore = create_empty_vectorstore(emb)
             save_vectorstore(
@@ -34,19 +36,20 @@ def ingestion_service(settings: Settings, folder, emb, reranker: BGEReranker, ve
             docs=docs,
             vectorstore=vectorstore,
             parent_store=parent_docstore,
+            child_store=child_docstore,
             parent_splitter=parent_splitter,
             child_splitter=child_splitter,
         )
+        child_docstore.close()
         if retriever is None:
             retriever = create_retriever(
                 vectorstore=vectorstore,
-                parent_store=create_docstore(settings.parent_store_dir),
+                parent_store=parent_docstore,
+                child_store=create_sqlite_docstore(settings.child_store_dir),
                 reranker=reranker,
-                hierarchical=True,
-                hybrid=hybrid,
-                k=30,
-                rerank_topk=5
             )
+        else:
+            parent_docstore.close()
 
         save_vectorstore(
             vectorstore,

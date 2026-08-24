@@ -33,14 +33,15 @@ backend/
 │   └── logger.py            # 日志配置
 │
 ├── ingestion/               # 文档导入模块
-│   ├── service.py           # 导入流程编排（load → parent_retriever → embed → save）
+│   ├── service.py           # 导入流程编排（load → split → store → embed → save）
 │   ├── loader.py            # Markdown 文档加载
 │   ├── splitter.py          # 文本切分
-│   ├── hierarchical.py      # 文档分层导入（parent/child split + embed）
+│   ├── hierarchical.py      # 文档分层导入（parent/child split + store + embed）
 │   └── utils.py             # chunk_id/doc_id 生成
 │
 ├── storage/                 # 存储模块
-│   ├── docstore.py          # json格式存储parent文档
+│   ├── sqlite_docstore.py   # SQLite 存储 parent/child 文档（BaseStore 实现）
+│   ├── docstore.py          # 旧版 JSON 存储（已被 sqlite_docstore 替代）
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
 ├── retrieval/                    # 检索模块
@@ -62,7 +63,7 @@ backend/
 │
 ├── data/                    # 数据目录
 │   ├── document/            # Markdown 知识文档
-│   ├── database/            # 数据库
+│   ├── database/            # 数据库（vectorstore + parent_store + child_store）
 │   └── memory/              # LangGraph 对话状态持久化
 └── logs/                    # 运行日志
 
@@ -82,16 +83,14 @@ tests/
       │
 ingest_documents (parent/child split)
       │
-      ├────────────────+
-      │                │
-      │                │
-Parent Document     Child Document
-      │                │
-      │                │
-JsonDocStore        Embedding
-                       │
-                       │
-                     FAISS
+      ├──────────────────+
+      │                  │
+Parent Document    Child Document
+      │                  ├──────────────────+
+      │                  │                  │
+SqliteDocStore     SqliteDocStore        Embedding
+(parent_store)     (child_store)            │
+                                          FAISS
 ```
 
 **查询问答**
@@ -131,7 +130,7 @@ Embedding
  ↓
 FAISS(child)
  ↓
-JsonDocStore(parent)
+SqliteDocStore(parent)
 
 
 Query:
@@ -156,7 +155,8 @@ LLM
 - **框架**:LangChain + LangGraph
 - **Embedding**: BAAI/bge-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
-- **稀疏检索**: BM25（rank_bm25）
+- **文档存储**: SQLite（SqliteDocStore，parent/child 文档独立存储）
+- **稀疏检索**: BM25
 - **Retriever**: DenseRetriever + HybridRetriever(RRF) + RerankRetriever + HierarchicalRetriever 检索链
 - **LLM**: LangChain ChatModel（支持 OpenAI Compatible API）
 - **记忆**: SQLite (LangGraph Checkpoint)
@@ -188,12 +188,14 @@ pytest
 
 - 支持本地 Embedding 模型
 - FAISS 本地向量检索
+- SQLite 持久化 parent/child 文档（SqliteDocStore）
+- BM25 稀疏检索语料从 child_store 读取，不依赖 FAISS 内部 docstore
 - 检索结果保留文档来源信息
 - 使用 Agent Tool 动态调用知识库
 - SQLite 持久化保存对话状态
 - 统一异常处理（RAGError 异常体系）
 - 完善的日志记录
-- 支持基于配置切换不同知识库索引，每个知识库独立维护 FAISS 向量索引和 Parent Document 存储
+- 支持基于配置切换不同知识库索引，每个知识库独立维护 FAISS 向量索引和 parent/child 文档存储
 ## Logging
 
 项目使用 Python logging 记录运行状态，包括：
@@ -219,6 +221,8 @@ pytest
 - [x] 完成Reranker
 - [x] 完成Retriever模块化 为hybridsearch准备
 - [x] 完成hybridsearch
+- [x] SqliteDocStore 替代 JsonDocStore，parent/child 文档独立 SQLite 存储
+- [x] BM25 语料从 child_store 读取，不依赖 FAISS 内部 docstore
 - [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测
