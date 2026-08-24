@@ -11,7 +11,7 @@ from backend.storage.vectorstore import save_vectorstore, create_empty_vectorsto
 from backend.retrieval.factory import create_retriever
 
 
-def ingestion_service(settings: Settings, folder, emb, reranker: BGEReranker, vectorstore=None, retriever=None):
+def ingestion_service(settings: Settings, folder, emb, reranker: BGEReranker, vectorstore=None, retriever=None, hybrid=True):
     try:
         document_dir = settings.document_dir
         vectorstore_dir = settings.vectorstore_dir
@@ -43,7 +43,8 @@ def ingestion_service(settings: Settings, folder, emb, reranker: BGEReranker, ve
                 parent_store=create_docstore(settings.parent_store_dir),
                 reranker=reranker,
                 hierarchical=True,
-                norm_k=30,
+                hybrid=hybrid,
+                k=30,
                 rerank_topk=5
             )
 

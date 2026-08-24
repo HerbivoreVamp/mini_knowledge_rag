@@ -1,9 +1,11 @@
 # 加载 .md 文件
-
+import uuid
 from pathlib import Path
 from functools import partial
+
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 
+from .utils import create_doc_id
 from backend.core.logger import logger
 from backend.core.exceptions import LoaderError
 
@@ -64,12 +66,14 @@ def load_md(
                 )
             skip_count += 1
             continue
-
         file_path = Path(doc.metadata.get("source", "")).resolve()
         relative_path = file_path.relative_to(root_path)
         doc.metadata.update({
             "source": str(relative_path),
             "file_type": "markdown"
+        })
+        doc.metadata.update({
+            "doc_id": create_doc_id(doc),
         })
         valid_docs.append(doc)
     if not valid_docs:

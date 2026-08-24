@@ -1,5 +1,4 @@
-# 这里放=乱七八糟的小功能
-
+# 这里放一些通用功能
 from pathlib import Path
 
 

@@ -20,7 +20,7 @@ def test_ingest_documents_success(mocker, tmp_path):
     parent_splitter = FakeSplitter()
     child_splitter = FakeSplitter()
 
-    docs = [Document(page_content="test content")]
+    docs = [Document(page_content="test content", metadata={"source": "test.md"})]
 
     result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
 
@@ -38,9 +38,9 @@ def test_ingest_documents_multiple_docs(mocker, tmp_path):
     child_splitter = FakeSplitter()
 
     docs = [
-        Document(page_content="doc1"),
-        Document(page_content="doc2"),
-        Document(page_content="doc3"),
+        Document(page_content="doc1", metadata={"source": "test.md"}),
+        Document(page_content="doc2", metadata={"source": "test.md"}),
+        Document(page_content="doc3", metadata={"source": "test.md"}),
     ]
 
     result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
@@ -58,13 +58,13 @@ def test_ingest_documents_parent_splitter_produces_multiple(mocker, tmp_path):
     class MultiParentSplitter:
         def split_documents(self, docs):
             return [
-                Document(page_content="parent1"),
-                Document(page_content="parent2"),
+                Document(page_content="parent1", metadata={"source": "test.md"}),
+                Document(page_content="parent2", metadata={"source": "test.md"}),
             ]
 
     child_splitter = FakeSplitter()
 
-    docs = [Document(page_content="original")]
+    docs = [Document(page_content="original", metadata={"source": "test.md"})]
 
     result = ingest_documents(docs, vectorstore, parent_store, MultiParentSplitter(), child_splitter)
 
@@ -82,12 +82,12 @@ def test_ingest_documents_child_splitter_produces_multiple(mocker, tmp_path):
     class MultiChildSplitter:
         def split_documents(self, docs):
             return [
-                Document(page_content="child1"),
-                Document(page_content="child2"),
-                Document(page_content="child3"),
+                Document(page_content="child1", metadata={"source": "test.md"}),
+                Document(page_content="child2", metadata={"source": "test.md"}),
+                Document(page_content="child3", metadata={"source": "test.md"}),
             ]
 
-    docs = [Document(page_content="original")]
+    docs = [Document(page_content="original", metadata={"source": "test.md"})]
 
     result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, MultiChildSplitter())
 
@@ -113,7 +113,7 @@ def test_ingest_documents_parent_id_assigned(mocker, tmp_path):
     parent_splitter = FakeSplitter()
     child_splitter = FakeSplitter()
 
-    docs = [Document(page_content="test")]
+    docs = [Document(page_content="test", metadata={"source": "test.md"})]
 
     result = ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
 
@@ -133,7 +133,7 @@ def test_ingest_documents_child_has_parent_id(mocker, tmp_path):
     parent_splitter = FakeSplitter()
     child_splitter = FakeSplitter()
 
-    docs = [Document(page_content="test")]
+    docs = [Document(page_content="test", metadata={"source": "test.md"})]
 
     ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)
 
@@ -152,7 +152,7 @@ def test_ingest_documents_add_documents_failure(mocker, tmp_path):
     parent_splitter = FakeSplitter()
     child_splitter = FakeSplitter()
 
-    docs = [Document(page_content="test")]
+    docs = [Document(page_content="test", metadata={"source": "test.md"})]
 
     with pytest.raises(RAGError):
         ingest_documents(docs, vectorstore, parent_store, parent_splitter, child_splitter)

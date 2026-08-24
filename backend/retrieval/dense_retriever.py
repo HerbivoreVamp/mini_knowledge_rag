@@ -9,7 +9,7 @@ from backend.core.exceptions import RetrievalError
 from backend.core.logger import logger
 
 
-class NormalRetriever(BaseRetriever):
+class DenseRetriever(BaseRetriever):
     vectorstore: VectorStore
     k: int = 30
     _retriever: BaseRetriever | None = PrivateAttr(default=None)  # 动态生成的内部对象(由VectorStore生成) 私有属性 / 内部使用
@@ -32,29 +32,29 @@ class NormalRetriever(BaseRetriever):
             )
 
             logger.info(
-                f"NormalRetriever创建成功 k={self.k}"
+                f"DenseRetriever创建成功 k={self.k}"
             )
 
             return self
 
         except Exception as e:
             logger.exception(
-                f"NormalRetriever创建失败 error={e}"
+                f"DenseRetriever创建失败 error={e}"
             )
             raise RetrievalError(
-                "NormalRetriever创建失败"
+                "DenseRetriever创建失败"
             ) from e
 
     def _get_relevant_documents(self, query: str, *, run_manager=None) -> list[Document]:
         if self._retriever is None:
             raise RetrievalError(
-                "NormalRetriever未初始化"
+                "DenseRetriever未初始化"
             )
         try:
             docs = self._retriever.invoke(query)
-            logger.info(f"docs召回成功 total_docs={len(docs)}")
+            logger.info(f"DenseRetriever召回文档成功 total_docs={len(docs)}")
         except Exception as e:
-            logger.exception(f"docs召回出错 error={e}")
-            raise RetrievalError("docs召回出错") from e
+            logger.exception(f"DenseRetriever召回出错 error={e}")
+            raise RetrievalError("DenseRetriever召回出错") from e
 
         return docs

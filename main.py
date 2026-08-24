@@ -24,12 +24,11 @@ llm = create_llm(settings)
 # --- 向量库加载 ---
 try:
     vectorstore = load_vectorstore(settings.vectorstore_dir, emb, settings.index_name)
-    retriever = create_retriever(vectorstore=vectorstore,
-                                 parent_store=create_docstore(settings.parent_store_dir),
-                                 reranker=reranker,
-                                 hierarchical=True,
-                                 norm_k=30,
-                                 rerank_topk=5)
+    retriever = create_retriever(
+        vectorstore=vectorstore,
+        parent_store=create_docstore(settings.parent_store_dir),
+        reranker=reranker,
+    )
     logger.info(f"vectorstore导入成功 path={settings.vectorstore_dir}")
     logger.info("HierarchicalRetriever创建成功")
 except RAGError as e:

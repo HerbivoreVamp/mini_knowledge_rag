@@ -11,12 +11,14 @@ from backend.core.logger import logger
 class HierarchicalRetriever(BaseRetriever):
     child_retriever: BaseRetriever
     parent_store: JsonDocStore
+    parent_k: int
     if TYPE_CHECKING:  # 方便显示参数 没有实际运行
         def __init__(
                 self,
                 *,
                 child_retriever: BaseRetriever,
                 parent_store: JsonDocStore,
+                parent_k: int,
         ):
             ...
 
@@ -48,7 +50,7 @@ class HierarchicalRetriever(BaseRetriever):
 
         if missing_docs > 0:
             logger.warning(f"异常:部分 parent_docs 未找到"
-                           f"parent_docs召回成功 total_docs={total_docs}, missing_docs={missing_docs}")
+                           f"parent_docs召回成功 保留parent_k={self.parent_k} total_docs={total_docs}, missing_docs={missing_docs}")
         else:
-            logger.info(f"parent_docs召回成功 total_docs={total_docs}, missing_docs={missing_docs}")
-        return parent_docs
+            logger.info(f"parent_docs召回成功 保留parent_k={self.parent_k} total_docs={total_docs}, missing_docs={missing_docs}")
+        return parent_docs[:self.parent_k]

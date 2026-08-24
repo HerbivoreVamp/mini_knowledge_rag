@@ -77,7 +77,8 @@ def test_ingestion_service(mocker, tmp_path):
         parent_store=mocker.ANY,
         reranker=mock_reranker,
         hierarchical=True,
-        norm_k=30,
+        hybrid=True,
+        k=30,
         rerank_topk=5,
     )
     assert mock_save.call_count == 2

@@ -1,5 +1,7 @@
 import uuid
 
+from .utils import create_chunk_id
+
 from backend.storage.docstore import JsonDocStore
 from backend.storage.vectorstore import add_documents
 from backend.core.logger import logger
@@ -16,7 +18,6 @@ def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_split
     for parent in parents:
 
         parent_id = str(uuid.uuid4())
-
         parent.metadata["parent_id"] = parent_id
 
         children = child_splitter.split_documents(
@@ -24,6 +25,7 @@ def ingest_documents(docs, vectorstore, parent_store: JsonDocStore, parent_split
         )
 
         for child in children:
+            child.metadata["chunk_id"] = create_chunk_id(child)
             child.metadata["parent_id"] = parent_id
 
         child_docs.extend(children)

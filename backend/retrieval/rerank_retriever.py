@@ -30,7 +30,7 @@ class RerankRetriever(BaseRetriever):
                 docs,
                 top_k=self.top_k
             )
-
+            logger.info("RerankRetriever重排成功")
         except Exception as e:
             logger.exception(f"rerank出错 error={e}")
             raise RetrievalError("rerank出错") from e

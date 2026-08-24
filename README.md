@@ -6,7 +6,8 @@
 
 - Hierarchical Retrieval
 - Parent Document Retrieval
-- 三阶段检索链（向量检索 → Rerank → Parent 扩展）
+- Hybrid Search（Dense + BM25，RRF 融合）
+- 检索链（Dense/BM25 混合召回 → Rerank → Parent 扩展）
 - Agent Tool 调用知识库
 - 本地模型运行
 - SQLite 对话状态持久化
@@ -35,18 +36,22 @@ backend/
 │   ├── service.py           # 导入流程编排（load → parent_retriever → embed → save）
 │   ├── loader.py            # Markdown 文档加载
 │   ├── splitter.py          # 文本切分
-│   └── hierarchical.py      # 文档分层导入（parent/child split + embed）
+│   ├── hierarchical.py      # 文档分层导入（parent/child split + embed）
+│   └── utils.py             # chunk_id/doc_id 生成
 │
 ├── storage/                 # 存储模块
 │   ├── docstore.py          # json格式存储parent文档
 │   └── vectorstore.py       # FAISS 向量库构建、加载、删除
 │
 ├── retrieval/                    # 检索模块
-│   ├── factory.py                # 检索器组装工厂（Normal → Rerank → Hierarchical）
-│   ├── normal_retriever.py       # 基础向量检索器（VectorStore 封装）
+│   ├── factory.py                # 检索器组装工厂（Dense → Hybrid → Rerank → Hierarchical）
+│   ├── dense_retriever.py        # 基础向量检索器（VectorStore 封装）
+│   ├── hybrid_retriever.py       # 混合检索器（Dense + BM25，RRF 融合）
 │   ├── rerank_retriever.py       # 重排序检索器（装饰器模式）
 │   ├── hierarchical_retriever.py # 分层检索器（child → parent 扩展）
-│   └── search.py                 # 检索工具封装（LangChain Tool）
+│   ├── search.py                 # 检索工具封装（LangChain Tool）
+│   └── fusion/
+│       └── rrf.py                # Reciprocal Rank Fusion 融合算法
 │
 ├── agent/                   # Agent 模块
 │   └── agent.py             # RAG Agent 创建
@@ -98,7 +103,12 @@ Agent
  |
 Retriever Tool
  |
-NormalRetriever (FAISS Child Chunk Search)
+ ├─────────────────────+
+ |                     |
+DenseRetriever   BM25Retriever
+ |                     |
+ ├─────────────────────+
+HybridRetriever (RRF 融合)
  |
 RerankRetriever (Reranker 重排序)
  |
@@ -127,7 +137,11 @@ JsonDocStore(parent)
 Query:
 Question
  ↓
-NormalRetriever (FAISS similarity search)
+DenseRetriever (FAISS similarity search)
+ +
+BM25Retriever (sparse retrieval)
+ ↓
+HybridRetriever (RRF 融合)
  ↓
 RerankRetriever (BGE Reranker)
  ↓
@@ -142,7 +156,8 @@ LLM
 - **框架**:LangChain + LangGraph
 - **Embedding**: BAAI/bge-small-zh-v1.5 (HuggingFace)
 - **向量库**: FAISS
-- **Retriever**: NormalRetriever + RerankRetriever + HierarchicalRetriever 三阶段检索链
+- **稀疏检索**: BM25（rank_bm25）
+- **Retriever**: DenseRetriever + HybridRetriever(RRF) + RerankRetriever + HierarchicalRetriever 检索链
 - **LLM**: LangChain ChatModel（支持 OpenAI Compatible API）
 - **记忆**: SQLite (LangGraph Checkpoint)
 
@@ -203,7 +218,7 @@ pytest
 - [x] 完成HierarchicalRetriever
 - [x] 完成Reranker
 - [x] 完成Retriever模块化 为hybridsearch准备
-- [ ] 完成hybridsearch
+- [x] 完成hybridsearch
 - [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测
