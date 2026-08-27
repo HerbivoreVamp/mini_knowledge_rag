@@ -222,9 +222,9 @@ pytest
 - [x] 完成Retriever模块化 为hybridsearch准备
 - [x] 完成hybridsearch
 - [x] SqliteDocStore 替代 JsonDocStore，parent/child 文档独立 SQLite 存储
-- [ ] 增加可选的SemanticChunker
 - [ ] 增加基础 evaluation 流程
   - [ ] RAGAS 评测
   - [ ] 自定义检索准确率测试
+- [ ] 增加可选的SemanticChunker
 - [ ] 完善 README 和项目文档
 - [ ] Docker 化部署（可选）

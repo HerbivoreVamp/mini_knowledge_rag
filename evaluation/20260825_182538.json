@@ -1,0 +1,6 @@
+{
+  "model": "bge-small-zh-v1.5",
+  "retriever": "hybrid_rerank",
+  "recall@5": 0.72,
+  "recall@20": 0.73
+}

@@ -1,0 +1,6 @@
+{
+  "model": "bge-small-zh-v1.5",
+  "retriever": "dense",
+  "recall@5": 0.44,
+  "recall@20": 0.65
+}
