@@ -1,0 +1,55 @@
+{
+  "model": "bge-small-zh-v1.5",
+  "model_reranker": "bge-reranker-v2-m3",
+  "level": "parent",
+  "params": {
+    "k": 30,
+    "sparse_k": 30,
+    "hybrid_topk": 50,
+    "rerank_topk": 20,
+    "parent_k": 3,
+    "k_values": [
+      5,
+      20
+    ],
+    "questions": 71
+  },
+  "results": [
+    {
+      "retriever": "dense",
+      "tokenizer": "proper",
+      "recall@5": 0.563,
+      "recall@20": 0.563,
+      "hits@5": 40,
+      "hits@20": 40,
+      "seconds": 0.9
+    },
+    {
+      "retriever": "hybrid",
+      "tokenizer": "proper",
+      "recall@5": 0.535,
+      "recall@20": 0.535,
+      "hits@5": 38,
+      "hits@20": 38,
+      "seconds": 0.8
+    },
+    {
+      "retriever": "dense_rerank",
+      "tokenizer": "proper",
+      "recall@5": 0.775,
+      "recall@20": 0.775,
+      "hits@5": 55,
+      "hits@20": 55,
+      "seconds": 28.6
+    },
+    {
+      "retriever": "hybrid_rerank",
+      "tokenizer": "proper",
+      "recall@5": 0.845,
+      "recall@20": 0.845,
+      "hits@5": 60,
+      "hits@20": 60,
+      "seconds": 42.7
+    }
+  ]
+}

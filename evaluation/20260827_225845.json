@@ -1,0 +1,27 @@
+{
+  "model": "bge-small-zh-v1.5",
+  "model_reranker": "bge-reranker-v2-m3",
+  "params": {
+    "k": 100,
+    "sparse_k": 100,
+    "hybrid_topk": 100,
+    "rerank_topk": 100
+  },
+  "results": [
+    {
+      "retriever": "dense",
+      "recall@5": 0.44,
+      "recall@20": 0.65
+    },
+    {
+      "retriever": "hybrid",
+      "recall@5": 0.34,
+      "recall@20": 0.58
+    },
+    {
+      "retriever": "dense_rerank",
+      "recall@5": 0.75,
+      "recall@20": 0.77
+    }
+  ]
+}

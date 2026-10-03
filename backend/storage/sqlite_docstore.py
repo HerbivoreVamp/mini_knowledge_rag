@@ -8,6 +8,7 @@ from langchain_core.stores import BaseStore
 from backend.core.logger import logger
 from backend.core.exceptions import DocStoreError
 
+
 # sqlite 连接不可跨线程使用 LangGraph 可能在线程中调用检索
 # check_same_thread=False + 每次操作后 commit 保证单进程内安全
 class SqliteDocStore(BaseStore):

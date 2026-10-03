@@ -58,8 +58,17 @@ def test_create_retriever_full_chain(mocker):
     )
 
     mock_DenseRetriever.assert_called_once_with(vectorstore=vectorstore, k=30)
-    mock_BM25Retriever.from_documents.assert_called_once_with(docs, k=20)
-    mock_HybridRetriever.assert_called_once_with(dense_retriever=mock_dense, sparse_retriever=mock_sparse)
+    # BM25 现在会带一个分词函数进去 所以按调用参数断言而不是整体相等
+    bm25_args, bm25_kwargs = mock_BM25Retriever.from_documents.call_args
+    assert bm25_args == (docs,)
+    assert bm25_kwargs["k"] == 20
+    # 默认分词方案: 去标点, 且保留 create_agent 这类标识符
+    assert bm25_kwargs["preprocess_func"]("`create_agent`:") == ["create_agent"]
+    mock_HybridRetriever.assert_called_once_with(
+        dense_retriever=mock_dense,
+        sparse_retriever=mock_sparse,
+        k=50,
+    )
     mock_RerankRetriever.assert_called_once_with(retriever=mock_hybrid, reranker=reranker, top_k=5)
     mock_HierarchicalRetriever.assert_called_once_with(
         child_retriever=mock_rerank,
@@ -267,3 +276,83 @@ def test_create_retriever_child_store_source(mocker, tmp_path):
     assert contents == {"child1", "child2"}
     # child_store 用完关闭
     close_spy.assert_called_once()
+
+
+def _tokenizer_used(mock_BM25Retriever):
+    """取出 factory 传给 BM25 的分词函数"""
+    return mock_BM25Retriever.from_documents.call_args.kwargs["preprocess_func"]
+
+
+def _patch_bm25(mocker):
+    mock_BM25Retriever = mocker.patch(
+        "backend.retrieval.factory.BM25Retriever",
+    )
+    mock_BM25Retriever.from_documents.return_value = mocker.Mock()
+    mocker.patch("backend.retrieval.factory.DenseRetriever", return_value=mocker.Mock())
+    mocker.patch("backend.retrieval.factory.HybridRetriever", return_value=mocker.Mock())
+    return mock_BM25Retriever
+
+
+def test_default_tokenizer_is_proper(mocker):
+    """不传 tokenizer 时默认用 proper"""
+    mock_BM25Retriever = _patch_bm25(mocker)
+
+    create_retriever(vectorstore=_make_vectorstore(mocker), hybrid=True, hierarchical=False)
+
+    tokenize = _tokenizer_used(mock_BM25Retriever)
+    assert tokenize.mode == "proper"
+    assert tokenize.lowercase is False
+    assert tokenize("`create_agent`:") == ["create_agent"]
+
+
+def test_tokenizer_can_restore_legacy_split(mocker):
+    """显式传 default 时恢复旧行为(text.split)"""
+    mock_BM25Retriever = _patch_bm25(mocker)
+
+    create_retriever(
+        vectorstore=_make_vectorstore(mocker),
+        hybrid=True,
+        hierarchical=False,
+        tokenizer="default",
+    )
+
+    tokenize = _tokenizer_used(mock_BM25Retriever)
+    assert tokenize.mode == "default"
+    assert tokenize("`create_agent`:") == ["`create_agent`:"]
+
+
+def test_tokenizer_lowercase_and_cjk_are_forwarded(mocker):
+    """lowercase / cjk 两个开关要真的传到分词函数里"""
+    mock_BM25Retriever = _patch_bm25(mocker)
+
+    create_retriever(
+        vectorstore=_make_vectorstore(mocker),
+        hybrid=True,
+        hierarchical=False,
+        tokenizer="punct",
+        tokenizer_lowercase=True,
+        tokenizer_cjk="char",
+    )
+
+    tokenize = _tokenizer_used(mock_BM25Retriever)
+    assert tokenize.mode == "punct"
+    assert tokenize.lowercase is True
+    assert tokenize.cjk == "char"
+    assert tokenize("Create_Agent 中文") == ["create_agent", "中", "文"]
+
+
+def test_invalid_tokenizer_mode_raises(mocker):
+    from backend.retrieval.tokenizer import TokenizerMode
+
+    _patch_bm25(mocker)
+
+    with pytest.raises(RetrievalError):
+        create_retriever(
+            vectorstore=_make_vectorstore(mocker),
+            hybrid=True,
+            hierarchical=False,
+            tokenizer="no_such_mode",
+        )
+
+    # 合法取值仍然正常
+    assert TokenizerMode("proper") is TokenizerMode.PROPER
