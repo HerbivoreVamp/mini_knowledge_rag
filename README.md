@@ -279,7 +279,6 @@ python evaluation/run_eval.py --level parent
   - [ ] RAGAS 评测
 - [x] 修 chunk_id 碰撞（把 parent_id 掺进哈希，导入自检 1455/1455 唯一）
 - [x] QA 数据集改用证据锚点（源文档 + 字符区间），改切分不再需要重做 QA
-- [ ] 主库重新导入一次（让主库也用上新的 chunk_id / file_start_index）
 - [ ] 导入去重 / 清库
 - [ ] 降低 parent 层脏率
 - [ ] 增加可选的SemanticChunker
