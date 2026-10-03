@@ -12,7 +12,9 @@
       5,
       20
     ],
-    "questions": 71
+    "questions": 71,
+    "dataset": "langchain_qa_dataset_anchors.json",
+    "min_coverage": 0.5
   },
   "results": [
     {
@@ -22,7 +24,7 @@
       "recall@20": 0.648,
       "hits@5": 31,
       "hits@20": 46,
-      "seconds": 0.7
+      "seconds": 1.2
     },
     {
       "retriever": "hybrid",
@@ -31,7 +33,7 @@
       "recall@20": 0.718,
       "hits@5": 32,
       "hits@20": 51,
-      "seconds": 0.7
+      "seconds": 0.6
     },
     {
       "retriever": "dense_rerank",
@@ -40,7 +42,7 @@
       "recall@20": 0.662,
       "hits@5": 47,
       "hits@20": 47,
-      "seconds": 28.2
+      "seconds": 28.3
     },
     {
       "retriever": "hybrid_rerank",
@@ -49,7 +51,7 @@
       "recall@20": 0.803,
       "hits@5": 55,
       "hits@20": 57,
-      "seconds": 41.9
+      "seconds": 40.5
     }
   ]
 }

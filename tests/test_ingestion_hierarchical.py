@@ -195,3 +195,74 @@ def test_ingest_documents_child_store_none_skips(mocker, tmp_path):
     result = ingest_documents(docs, vectorstore, parent_store, None, parent_splitter, child_splitter)
 
     assert result["children"] == 1
+
+
+def test_ingest_documents_repeated_text_in_two_parents_gets_distinct_chunk_ids(mocker, tmp_path):
+    """回归测试: 同一段文本出现在两个 parent 时, chunk_id 不能相同
+
+    旧实现用 source + start_index + content 算 id, 而 child 的 start_index 是
+    相对 parent 的, 于是两段"相对位置相同"的样板代码会算出同一个 id,
+    child_store 按 key 覆盖 -> 丢一篇。
+    """
+    from backend.storage.sqlite_docstore import SqliteDocStore
+
+    class TwoIdenticalParents:
+        def split_documents(self, docs):
+            return [
+                Document(page_content="same boilerplate", metadata={"source": "t.md", "start_index": 0}),
+                Document(page_content="same boilerplate", metadata={"source": "t.md", "start_index": 0}),
+            ]
+
+    parent_store = SqliteDocStore(tmp_path / "parent")
+    child_store = SqliteDocStore(tmp_path / "child")
+    vectorstore = mocker.Mock()
+
+    result = ingest_documents(
+        [Document(page_content="x", metadata={"source": "t.md"})],
+        vectorstore,
+        parent_store,
+        child_store,
+        TwoIdenticalParents(),
+        FakeSplitter(),
+    )
+
+    assert result["children"] == 2
+    ids = list(child_store.yield_keys())
+    assert len(ids) == 2
+    assert len(set(ids)) == 2
+    assert child_store.count() == 2
+    child_store.close()
+    parent_store.close()
+
+
+def test_ingest_documents_child_has_file_start_index(mocker, tmp_path):
+    """child 的 file_start_index = parent 的文件内偏移 + child 相对 parent 的偏移"""
+    from backend.storage.sqlite_docstore import SqliteDocStore
+
+    class RelativeStartChildSplitter:
+        def split_documents(self, docs):
+            return [
+                Document(
+                    page_content="child",
+                    metadata={**docs[0].metadata, "start_index": 50},
+                )
+            ]
+
+    parent_store = SqliteDocStore(tmp_path / "parent")
+    child_store = SqliteDocStore(tmp_path / "child")
+    vectorstore = mocker.Mock()
+
+    ingest_documents(
+        [Document(page_content="p", metadata={"source": "t.md", "start_index": 100})],
+        vectorstore,
+        parent_store,
+        child_store,
+        FakeSplitter(),
+        RelativeStartChildSplitter(),
+    )
+
+    child = child_store.get_all_documents()[0]
+    assert child.metadata["start_index"] == 50
+    assert child.metadata["file_start_index"] == 150
+    child_store.close()
+    parent_store.close()

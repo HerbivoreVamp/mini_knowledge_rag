@@ -12,18 +12,11 @@
       5,
       20
     ],
-    "questions": 71
+    "questions": 71,
+    "dataset": "langchain_qa_dataset_anchors.json",
+    "min_coverage": 0.5
   },
   "results": [
-    {
-      "retriever": "dense",
-      "tokenizer": "default",
-      "recall@5": 0.437,
-      "recall@20": 0.648,
-      "hits@5": 31,
-      "hits@20": 46,
-      "seconds": 0.7
-    },
     {
       "retriever": "hybrid",
       "tokenizer": "default",
@@ -31,16 +24,16 @@
       "recall@20": 0.662,
       "hits@5": 27,
       "hits@20": 47,
-      "seconds": 0.7
+      "seconds": 1.0
     },
     {
-      "retriever": "dense_rerank",
-      "tokenizer": "default",
-      "recall@5": 0.662,
-      "recall@20": 0.662,
-      "hits@5": 47,
-      "hits@20": 47,
-      "seconds": 28.9
+      "retriever": "hybrid",
+      "tokenizer": "proper",
+      "recall@5": 0.451,
+      "recall@20": 0.718,
+      "hits@5": 32,
+      "hits@20": 51,
+      "seconds": 0.7
     },
     {
       "retriever": "hybrid_rerank",
@@ -49,7 +42,16 @@
       "recall@20": 0.732,
       "hits@5": 51,
       "hits@20": 52,
-      "seconds": 43.9
+      "seconds": 41.9
+    },
+    {
+      "retriever": "hybrid_rerank",
+      "tokenizer": "proper",
+      "recall@5": 0.775,
+      "recall@20": 0.803,
+      "hits@5": 55,
+      "hits@20": 57,
+      "seconds": 42.5
     }
   ]
 }

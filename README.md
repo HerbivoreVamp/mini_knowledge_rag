@@ -70,7 +70,10 @@ backend/
 logs/                        # 运行日志（logging 相对启动目录写入，通常在根目录）
 evaluation/                  # 检索评测
 ├── run_eval.py              # 评测脚本（--level child|parent，可切分词方案）
-├── rag_test.py              # 最早的评测脚本（固定用 default 分词，与历史结果同口径）
+├── anchors.py               # 证据锚点（源文档 + 字符区间）解析
+├── make_anchors.py          # QA 数据集迁移成锚点口径（一次性）
+├── rebuild_index.py         # 重建索引副本（改了切分参数或 id 算法后用）
+├── rag_test.py              # 最早的评测脚本（历史保留，只对重建前的旧索引有效）
 └── data/                    # 评测用索引副本（评测只读这里，不写主库）
 
 tests/                       # 各类单元测试
@@ -176,6 +179,19 @@ create_retriever(..., tokenizer="proper", tokenizer_lowercase=False, tokenizer_c
 `hybrid_rerank` 0.718 → 0.775、0.732 → 0.803。小写化会让 recall@20 变差，所以默认关闭。
 想要旧行为做对照就传 `tokenizer="default"`。
 
+## 检索评测
+
+```bash
+python evaluation/run_eval.py --level child      # 检索评测（child / parent 两种口径）
+python evaluation/run_eval.py --level parent --retriever hybrid_rerank
+python evaluation/rebuild_index.py               # 改了切分参数或 id 算法后重建索引副本
+python evaluation/make_anchors.py                # QA 数据集 → 锚点口径（迁移一次即可）
+```
+
+QA 数据集用「源文档 + 字符区间」当 ground truth（见 `evaluation/anchors.py`），评测时按当前索引
+现算，所以**重新导入、改 chunk_size / chunk_overlap、改 chunk_id 算法都不用改数据集**；
+早期存 `chunk_id` 的旧口径也仍然兼容。
+
 ## 技术栈
 
 - **框架**:LangChain + LangGraph
@@ -209,7 +225,8 @@ python evaluation/run_eval.py --level parent
 
 按提示选择：1 导入文档 / 2 查询知识库 / 3 删除数据库和记忆 / 4 仅删除记忆 / 5 手动查询知识库（只检索不走 LLM）/ exit 退出。
 将 Markdown .md文件放入 data/document/ 目录后运行导入流程 支持嵌套文件夹。
-同一份文档重复导入会累积（FAISS 向量和 parent 会翻倍），重新导入前先用功能 3 清库。
+导入是"追加"语义：同一份文档重复导入会累积（FAISS 向量和 parent 会翻倍），重新导入前先用功能 3 清库；
+改了 chunk_size / overlap 或 chunk_id 算法后也需要清库重导（或 `python evaluation/rebuild_index.py --data-dir backend/data/database`）。
 
 ## 环境
 
@@ -260,7 +277,9 @@ python evaluation/run_eval.py --level parent
 - [x] 增加基础 evaluation 流程（evaluation/run_eval.py）
   - [x] 自定义检索准确率测试（recall@K，child / parent 两种口径）
   - [ ] RAGAS 评测
-- [ ] 修 chunk_id 碰撞（把 parent_id 掺进哈希）
+- [x] 修 chunk_id 碰撞（把 parent_id 掺进哈希，导入自检 1455/1455 唯一）
+- [x] QA 数据集改用证据锚点（源文档 + 字符区间），改切分不再需要重做 QA
+- [ ] 主库重新导入一次（让主库也用上新的 chunk_id / file_start_index）
 - [ ] 导入去重 / 清库
 - [ ] 降低 parent 层脏率
 - [ ] 增加可选的SemanticChunker

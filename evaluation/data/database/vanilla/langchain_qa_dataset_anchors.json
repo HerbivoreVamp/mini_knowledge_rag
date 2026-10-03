@@ -1,0 +1,1427 @@
+{
+  "format": "anchor-v1",
+  "generated": "2026-10-03T16:14:26",
+  "note": "ground truth = 源文档字符区间, 评测时按当前索引现算; 只要源文档内容不变, 重新导入 / 改切分参数 / 改 id 算法都不需要改这个文件。解析逻辑见 evaluation/anchors.py",
+  "items": [
+    {
+      "id": "lc_0001",
+      "question": "LangChain 中 create_agent 的定位是什么？",
+      "answer": "create_agent 是 LangChain 提供的一个最小化、高度可配置的 agent harness，可由 model、tools、prompt 和 middleware 组合成所需用例的 agent。",
+      "gold": [
+        {
+          "source": "langchain_doc\\overview.md",
+          "span": [
+            0,
+            372
+          ],
+          "quote": "> ## Documentation Index\n> Fetch the complete documentation index at: https://docs.langchain.com/llms.txt\n> Use this file to discover all available pages before exploring further.\n\n# LangChain overview\n\n> LangChain provides create_agent: a minimal, highly configurable agent harness. Compose exactly the agent your use case needs from model, tools, prompt, and middleware.",
+          "excerpt": "LangChain provides create_agent: a minimal, highly configurable agent harness. Compose exactly the agent your use case needs from model, tools, prompt, and middleware."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0002",
+      "question": "LangChain 中 Agent 由哪两部分组成？",
+      "answer": "Agent = Model + Harness。harness 是模型循环之外的所有内容，包括 prompt、tools 以及塑造模型行为的 middleware。",
+      "gold": [
+        {
+          "source": "langchain_doc\\overview.md",
+          "span": [
+            374,
+            755
+          ],
+          "quote": "**Agent = Model + Harness.** LangChain provides `create_agent`: a minimal, highly configurable harness. The harness is everything around the model loop: the prompt, the tools, and any middleware that shapes behavior. Start with the primitives and compose exactly what your use case needs. Supports [OpenAI, Anthropic, Google, and more](/oss/python/integrations/providers/overview).",
+          "excerpt": "Agent = Model + Harness. LangChain provides create_agent: a minimal, highly configurable harness. The harness is everything around the model loop: the prompt, the tools, and any middleware that shapes behavior."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0003",
+      "question": "LangChain、LangGraph 与 Deep Agents 之间如何选择？",
+      "answer": "Deep Agents 是 batteries-included 的 agent；LangChain 的 create_agent 适合需要高度定制 harness 的场景；LangGraph 是低层编排框架，用于结合确定性与 agentic 工作流的高级需求。",
+      "gold": [
+        {
+          "source": "langchain_doc\\overview.md",
+          "span": [
+            757,
+            1106
+          ],
+          "quote": "<Tip>\n  **LangChain vs. LangGraph vs. Deep Agents**\n\n  Start with [Deep Agents](/oss/python/deepagents/overview/) for a \"batteries-included\" agent with features like automatic context compression, a virtual filesystem, and subagent-spawning. Deep Agents are built on LangChain [agents](/oss/python/langchain/agents/) which you can also use directly.",
+          "excerpt": "Start with Deep Agents for a batteries-included agent with features like automatic context compression, a virtual filesystem, and subagent-spawning. Use LangChain (create_agent) for a highly customizable harness. Use LangGraph, our low-level orchestration framework, for advanced needs combining deterministic and agentic workflows."
+        }
+      ],
+      "metadata": {
+        "category": "comparison",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0004",
+      "question": "LangChain 中 agent 的定义是什么？",
+      "answer": "agent 是一个模型在循环中调用工具，直到给定任务完成的系统。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            0,
+            266
+          ],
+          "quote": "> ## Documentation Index\n> Fetch the complete documentation index at: https://docs.langchain.com/llms.txt\n> Use this file to discover all available pages before exploring further.\n\n# Agents\n\nAn agent is a model calling tools in a loop until a given task is complete.",
+          "excerpt": "An agent is a model calling tools in a loop until a given task is complete."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0005",
+      "question": "harness 的职责是什么？",
+      "answer": "harness 的职责是在给定任务中，在正确的时机为模型提供正确的上下文；它是模型循环之外的所有内容，包括 prompt、tools 和 middleware。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            652,
+            910
+          ],
+          "quote": "A harness is everything around that loop: the prompt, the tools, and any middleware that shapes the model's behavior.\n\n<Note>\n  **Agent = Model + Harness**\n\n  The job of a harness: get the model the right context at the right time for the given task.\n</Note>",
+          "excerpt": "A harness is everything around that loop: the prompt, the tools, and any middleware that shapes the model's behavior. The job of a harness: get the model the right context at the right time for the given task."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0006",
+      "question": "如何为 agent 设置系统提示？",
+      "answer": "system_prompt 参数接受字符串或 SystemMessage 来塑造 agent 处理任务的方式；若需要运行时动态提示，则使用 middleware。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            7868,
+            8073
+          ],
+          "quote": "### System prompt\n\nShape how the agent approaches tasks. The system prompt parameter accepts a string or `SystemMessage`. For dynamic prompts at runtime, use [middleware](/oss/python/langchain/middleware).",
+          "excerpt": "Shape how the agent approaches tasks. The system prompt parameter accepts a string or SystemMessage. For dynamic prompts at runtime, use middleware."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0007",
+      "question": "调用 agent 时为什么要传 thread_id？",
+      "answer": "传入 thread_id 是为了让 agent 持久化并恢复对话历史，使后续轮次可以复用同一会话上下文。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            14189,
+            14567
+          ],
+          "quote": "You can invoke an agent with a message. Behind the scenes that passes an update to the agent's [`State`](/oss/python/langgraph/graph-api#state). All agents include a [sequence of messages](/oss/python/langgraph/use-graph-api#messagesstate) in their state; to invoke the agent, pass a new message along with a `thread_id` so the agent can persist and resume conversation history:",
+          "excerpt": "You can invoke an agent with a message. All agents include a sequence of messages in their state; to invoke the agent, pass a new message along with a thread_id so the agent can persist and resume conversation history."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0008",
+      "question": "用 thread_id 持久化对话历史需要什么前提？",
+      "answer": "需要为 agent 配置一个 checkpointer；在 LangSmith 部署时会自动提供，本地则需显式传入，例如 create_agent(..., checkpointer=InMemorySaver())。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            20068,
+            20423
+          ],
+          "quote": "<Note>\n  Persisting conversation history with `thread_id` requires the agent to be configured with a [checkpointer](/oss/python/langchain/long-term-memory). When deployed on [LangSmith](/langsmith/deployment), a checkpointer is provisioned automatically. Locally, pass one explicitly, for example `create_agent(..., checkpointer=InMemorySaver())`.\n</Note>",
+          "excerpt": "Persisting conversation history with thread_id requires the agent to be configured with a checkpointer. When deployed on LangSmith, a checkpointer is provisioned automatically. Locally, pass one explicitly, for example create_agent(..., checkpointer=InMemorySaver())."
+        }
+      ],
+      "metadata": {
+        "category": "configuration",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0009",
+      "question": "thread_id 与 context 的作用有何区别？",
+      "answer": "thread_id 划定会话范围（消息历史、检查点），而 context 携带每次调用运行时的数据，供 tools 和 middleware 读取，二者通常一起传递。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            25682,
+            26001
+          ],
+          "quote": "`thread_id` scopes the *conversation* (message history, checkpoints), while `context` carries *per-run* data your tools and middleware read at invocation time. Both are commonly passed together. See [tool context](/oss/python/langchain/tools#context) and [Runtime](/oss/python/langchain/runtime) for more.\n\n## Streaming",
+          "excerpt": "thread_id scopes the conversation (message history, checkpoints), while context carries per-run data your tools and middleware read at invocation time. Both are commonly passed together."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0010",
+      "question": "create_agent 的扩展机制是什么？",
+      "answer": "middleware 是定制化的基本单元；每个 middleware 负责一个关注点，在合适时机挂入 agent 循环，并可与任意其他 middleware 自由组合。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            27026,
+            27424
+          ],
+          "quote": "<Tip>\n  For streaming modes, event types, and UI patterns, see [Streaming](/oss/python/langchain/streaming).\n</Tip>\n\n## Configure the harness\n\n`create_agent` is highly extensible. Middleware is the primitive for customization: each piece handles one concern, hooks into the agent loop at the right moment, and composes freely with any other. Take exactly what your use case needs and skip the rest.",
+          "excerpt": "create_agent is highly extensible. Middleware is the primitive for customization: each piece handles one concern, hooks into the agent loop at the right moment, and composes freely with any other."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0011",
+      "question": "execution environment 为 agent 提供了什么？",
+      "answer": "为 agent 提供工作空间：可调用的 tools、跨轮次读写文件的 filesystem，以及运行脚本或 shell 命令的代码执行能力。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            29206,
+            29508
+          ],
+          "quote": "### Execution environment\n\nAgents are especially useful when they can take action rather than just generate text. The execution environment gives the agent a workspace: tools it can call, a filesystem for reading and writing files across turns, and code execution for running scripts or shell commands.",
+          "excerpt": "Agents are especially useful when they can take action rather than just generate text. The execution environment gives the agent a workspace: tools it can call, a filesystem for reading and writing files across turns, and code execution for running scripts or shell commands."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0012",
+      "question": "context management 中的 summarization、memory、skills 各起什么作用？",
+      "answer": "summarization 在溢出前压缩历史；memory 在启动时加载持久化指令使知识跨会话保留；skills 按需浮现领域知识而非全部预加载。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            32595,
+            32987
+          ],
+          "quote": "### Context management\n\nEvery model call has a fixed context window. As an agent runs, that window fills with accumulating history, tool results, and intermediate steps. Summarization compresses history before overflow hits; memory loads persistent instructions at startup so knowledge carries across sessions; skills surface domain knowledge on demand rather than loading everything upfront.",
+          "excerpt": "Every model call has a fixed context window. Summarization compresses history before overflow hits; memory loads persistent instructions at startup so knowledge carries across sessions; skills surface domain knowledge on demand rather than loading everything upfront."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0013",
+      "question": "planning and delegation 如何处理超出单上下文窗口的复杂任务？",
+      "answer": "通过委派让主 agent 把任务拆分，交给各自在独立上下文中运行的 subagents 执行，工作可并行，主 agent 上下文保持简洁并专注于协调。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            38134,
+            38468
+          ],
+          "quote": "### Planning and delegation\n\nComplex tasks often exceed what one context window can handle. Delegation lets the main agent break work into pieces, hand them to subagents that each run in their own isolated context, and stay focused on coordination rather than execution. Work can run in parallel; the main agent's context stays clean.",
+          "excerpt": "Complex tasks often exceed what one context window can handle. Delegation lets the main agent break work into pieces, hand them to subagents that each run in their own isolated context, and stay focused on coordination rather than execution. Work can run in parallel; the main agent's context stays clean."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0014",
+      "question": "fault tolerance middleware 解决什么问题？",
+      "answer": "处理生产环境中开发期少见的功能性故障，如速率限制、模型超时、瞬时 API 错误，在基础设施层处理，使业务逻辑不必在每个调用处包裹 try/catch。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            49436,
+            49724
+          ],
+          "quote": "### Fault tolerance\n\nAgents in production encounter failures that rarely appear in development: rate limits, model timeouts, transient API errors. Fault tolerance middleware handles these at the infrastructure level so your tools and business logic don't need try/catch around every call.",
+          "excerpt": "Agents in production encounter failures that rarely appear in development: rate limits, model timeouts, transient API errors. Fault tolerance middleware handles these at the infrastructure level so your tools and business logic don't need try/catch around every call."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0015",
+      "question": "guardrails 与 prompt 约束有何不同？",
+      "answer": "有些策略无法靠 prompt 实现，需确定性地强制执行；guardrails 在数据流经 agent 循环时拦截，在工具结果到达模型上下文前应用合规规则或内容策略。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            54434,
+            54719
+          ],
+          "quote": "### Guardrails\n\nSome policies can't live in a prompt—they need to be enforced deterministically regardless of what the model does. Guardrails intercept data as it flows through the agent loop, applying compliance rules or content policies before tool results reach the model's context.",
+          "excerpt": "Some policies can't live in a prompt—they need to be enforced deterministically regardless of what the model does. Guardrails intercept data as it flows through the agent loop, applying compliance rules or content policies before tool results reach the model's context."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0016",
+      "question": "steering（人机协同）在什么场景下使用？",
+      "answer": "在完全自主不合适时使用，把人放在特定决策点（破坏性写入、昂贵 API 调用或需判断的环节）之前；agent 暂停等待，由人批准、修改或拒绝后继续执行。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Agents.md",
+          "span": [
+            58541,
+            58852
+          ],
+          "quote": "### Steering\n\nFull autonomy isn't always appropriate. Steering lets you place humans at specific decision points—before destructive writes, expensive API calls, or anything requiring judgment—without restructuring your agent. The agent pauses and waits; a human approves, edits, or rejects; execution continues.",
+          "excerpt": "Full autonomy isn't always appropriate. Steering lets you place humans at specific decision points—before destructive writes, expensive API calls, or anything requiring judgment—without restructuring your agent. The agent pauses and waits; a human approves, edits, or rejects; execution continues."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0017",
+      "question": "Event streaming 的作用是什么？",
+      "answer": "用于从 LangChain agent 运行中流式获取实时更新。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Event streaming.md",
+          "span": [
+            0,
+            252
+          ],
+          "quote": "> ## Documentation Index\n> Fetch the complete documentation index at: https://docs.langchain.com/llms.txt\n> Use this file to discover all available pages before exploring further.\n\n# Event streaming\n\n> Stream real-time updates from LangChain agent runs",
+          "excerpt": "Stream real-time updates from LangChain agent runs."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0018",
+      "question": "为什么 LangChain agent 支持与 LangGraph 相同的流式栈？",
+      "answer": "因为 LangChain agents 构建在 LangGraph 之上，所以支持相同的流式栈，并提供面向 agent 的投影用于 messages、tool calls、state 和 custom updates。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Event streaming.md",
+          "span": [
+            254,
+            419
+          ],
+          "quote": "LangChain agents are built on LangGraph, so they support the same streaming stack with agent-focused projections for messages, tool calls, state, and custom updates.",
+          "excerpt": "LangChain agents are built on LangGraph, so they support the same streaming stack with agent-focused projections for messages, tool calls, state, and custom updates."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0019",
+      "question": "stream.messages 投影产出什么对象，暴露哪些属性？",
+      "answer": "产出 ChatModelStream 对象，每个消息流暴露 .text、.reasoning、.tool_calls 和 .output。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Event streaming.md",
+          "span": [
+            2621,
+            3016
+          ],
+          "quote": "`stream.messages` yields `ChatModelStream` objects. Each message stream exposes `.text`, `.reasoning`, `.tool_calls`, and `.output`. Sync projections are iterable for live deltas and drainable for final values: use `str(message.text)` for final text and `message.tool_calls.get()` for finalized tool calls.\n\n## Agent messages\n\nUse `stream.messages` when you want model output from each LLM call.",
+          "excerpt": "stream.messages yields ChatModelStream objects. Each message stream exposes .text, .reasoning, .tool_calls, and .output. Sync projections are iterable for live deltas and drainable for final values."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0020",
+      "question": "流式场景下的 sub-agent 事件如何标识？",
+      "answer": "当 create_agent 通过包装工具调用另一个具名 create_agent 时，内部 agent 的事件在嵌套命名空间流动；传给 create_agent 的 name= 用于在流中标识该内部 agent。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Event streaming.md",
+          "span": [
+            5073,
+            5369
+          ],
+          "quote": "## Streaming sub-agents\n\nWhen a `create_agent` call invokes another named `create_agent` (via a wrapping tool, typically), the inner agent's events flow at a nested namespace. The `name=` you pass to `create_agent` identifies that inner agent in the stream, so you can filter and label per agent.",
+          "excerpt": "When a create_agent call invokes another named create_agent (via a wrapping tool, typically), the inner agent's events flow at a nested namespace. The name= you pass to create_agent identifies that inner agent in the stream, so you can filter and label per agent."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0021",
+      "question": "PIIMiddleware 如何在流式输出中发挥作用？",
+      "answer": "它通过 transformer 钩子从流式传输的输出中脱敏 PII，在文本增量、工具调用参数、工具输出和 state 快照离开运行前进行清洗。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Event streaming.md",
+          "span": [
+            10690,
+            11061
+          ],
+          "quote": "The built-in `PIIMiddleware` uses this hook to redact PII from streamed wire output. With `apply_to_output=True`, its registered transformer scrubs detected PII from text deltas, tool-call args, tool outputs, and state snapshots before they leave the run, closing the window where `after_model` state-level redaction would otherwise let raw PII through to live readers of",
+          "excerpt": "The built-in PIIMiddleware uses this hook to redact PII from streamed wire output. With apply_to_output=True, its registered transformer scrubs detected PII from text deltas, tool-call args, tool outputs, and state snapshots before they leave the run."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0022",
+      "question": "Messages 在 LangChain 中的定位是什么？",
+      "answer": "Messages 是模型上下文的基本单元，表示模型的输入与输出，承载交互时所需的内容与元数据。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Messages.md",
+          "span": [
+            0,
+            191
+          ],
+          "quote": "> ## Documentation Index\n> Fetch the complete documentation index at: https://docs.langchain.com/llms.txt\n> Use this file to discover all available pages before exploring further.\n\n# Messages",
+          "excerpt": "Messages are the fundamental unit of context for models in LangChain. They represent the input and output of models, carrying both the content and metadata needed to represent the state of a conversation when interacting with an LLM."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0023",
+      "question": "LangChain 的标准 message 类型为何能跨模型提供商使用？",
+      "answer": "LangChain 提供的标准 message 类型可在所有模型提供商上工作，无论调用哪个模型都能保证一致的行为。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Messages.md",
+          "span": [
+            880,
+            1190
+          ],
+          "quote": "LangChain provides a standard message type that works across all model providers, ensuring consistent behavior regardless of the model being called.\n\n## Basic usage\n\nThe simplest way to use messages is to create message objects and pass them to a model when [invoking](/oss/python/langchain/models#invocation).",
+          "excerpt": "LangChain provides a standard message type that works across all model providers, ensuring consistent behavior regardless of the model being called."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0024",
+      "question": "System message 与 Human message 分别代表什么？",
+      "answer": "System message 告诉模型如何行为并为交互提供上下文；Human message 代表用户输入与和模型的交互。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Messages.md",
+          "span": [
+            3598,
+            3858
+          ],
+          "quote": "* <Icon icon=\"settings\" size={16} /> [System message](#system-message) - Tells the model how to behave and provide context for interactions\n* <Icon icon=\"user\" size={16} /> [Human message](#human-message) - Represents user input and interactions with the model",
+          "excerpt": "System message - Tells the model how to behave and provide context for interactions. Human message - Represents user input and interactions with the model."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0025",
+      "question": "AI message 与 Tool message 分别承载什么？",
+      "answer": "AI message 是模型生成的响应，包含文本内容、tool calls 和元数据；Tool message 代表工具调用的输出。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Messages.md",
+          "span": [
+            3859,
+            4150
+          ],
+          "quote": "* <Icon icon=\"robot\" size={16} /> [AI message](#ai-message) - Responses generated by the model, including text content, tool calls, and metadata\n* <Icon icon=\"tool\" size={16} /> [Tool message](#tool-message) - Represents the outputs of [tool calls](/oss/python/langchain/models#tool-calling)",
+          "excerpt": "AI message - Responses generated by the model, including text content, tool calls, and metadata. Tool message - Represents the outputs of tool calls."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0026",
+      "question": "SystemMessage 的作用是什么？",
+      "answer": "SystemMessage 表示一组初始指令，用于预先设定模型的行为，设定语气、定义模型角色并建立交互准则。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Messages.md",
+          "span": [
+            4152,
+            4462
+          ],
+          "quote": "### System message\n\nA [`SystemMessage`](https://reference.langchain.com/python/langchain-core/messages/system/SystemMessage) represent an initial set of instructions that primes the model's behavior. You can use a system message to set the tone, define the model's role, and establish guidelines for responses.",
+          "excerpt": "A SystemMessage represent an initial set of instructions that primes the model's behavior. You can use a system message to set the tone, define the model's role, and establish guidelines for interactions."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0027",
+      "question": "LangChain 中 LLMs 能完成哪些任务？",
+      "answer": "LLMs 是能像人类一样理解与生成文本的 AI 工具，可写内容、翻译、摘要和回答问题，无需针对每项任务专门训练。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            181,
+            523
+          ],
+          "quote": "# Models\n\n[LLMs](https://en.wikipedia.org/wiki/Large_language_model) are powerful AI tools that can interpret and generate text like humans. They're versatile enough to write content, translate languages, summarize, and answer questions without needing specialized training for each task.\n\nIn addition to text generation, many models support:",
+          "excerpt": "LLMs are powerful AI tools that can interpret and generate text like humans. They're versatile enough to write content, translate languages, summarize, and answer questions without needing specialized training for each task."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0028",
+      "question": "什么是模型的 Tool calling 能力？",
+      "answer": "调用外部工具（如数据库查询或 API 调用）并在响应中使用其结果。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            525,
+            840
+          ],
+          "quote": "* <Icon icon=\"hammer\" size={16} /> [Tool calling](#tool-calling) - calling external tools (like databases queries or API calls) and use results in their responses.\n* <Icon icon=\"layout-grid\" size={16} /> [Structured output](#structured-output) - where the model's response is constrained to follow a defined format.",
+          "excerpt": "Tool calling - calling external tools (like databases queries or API calls) and use results in their responses."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0029",
+      "question": "Multimodality 与 Reasoning 分别指什么？",
+      "answer": "Multimodality 指处理和返回文本以外的数据（如图像、音频、视频）；Reasoning 指模型进行多步推理以得出结论。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            841,
+            1103
+          ],
+          "quote": "* <Icon icon=\"photo\" size={16} /> [Multimodality](#multimodal) - process and return data other than text, such as images, audio, and video.\n* <Icon icon=\"brain\" size={16} /> [Reasoning](#reasoning) - models perform multi-step reasoning to arrive at a conclusion.",
+          "excerpt": "Multimodality - process and return data other than text, such as images, audio, and video. Reasoning - models perform multi-step reasoning to arrive at a conclusion."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0030",
+      "question": "模型在 agent 中扮演什么角色？",
+      "answer": "模型是 agent 的推理引擎，驱动决策过程，决定调用哪些工具、如何解读结果以及何时给出最终答案。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            1105,
+            1322
+          ],
+          "quote": "Models are the reasoning engine of [agents](/oss/python/langchain/agents). They drive the agent's decision-making process, determining which tools to call, how to interpret results, and when to provide a final answer.",
+          "excerpt": "Models are the reasoning engine of agents. They drive the agent's decision-making process, determining which tools to call, how to interpret results, and when to provide a final answer."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0031",
+      "question": "模型选择对 agent 有何影响？",
+      "answer": "所选模型的质量与能力直接影响 agent 的基线可靠性与性能；不同模型擅长不同任务，有的更擅长复杂指令，有的擅长结构化推理，有的支持更大上下文窗口。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            1324,
+            1641
+          ],
+          "quote": "The quality and capabilities of the model you choose directly impact your agent's baseline reliability and performance. Different models excel at different tasks - some are better at following complex instructions, others at structured reasoning, and some support larger context windows for handling more information.",
+          "excerpt": "The quality and capabilities of the model you choose directly impact your agent's baseline reliability and performance. Different models excel at different tasks - some are better at following complex instructions, others at structured reasoning, and some support larger context windows."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0032",
+      "question": "LangChain 的标准模型接口带来什么好处？",
+      "answer": "可访问多种提供商集成，便于在模型间实验与切换，从而找到最适合用例的模型。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            1643,
+            1976
+          ],
+          "quote": "LangChain's standard model interfaces give you access to many different provider integrations, which makes it easy to experiment with and switch between models to find the best fit for your use case.\n\nFor provider-specific integration information and capabilities, see the provider's [chat model page](/oss/python/integrations/chat).",
+          "excerpt": "LangChain's standard model interfaces give you access to many different provider integrations, which makes it easy to experiment with and switch between models to find the best fit for your use case."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0033",
+      "question": "模型在 LangChain 中有哪两种使用方式？",
+      "answer": "一是与 agent 一起使用，创建 agent 时动态指定模型；二是独立使用，在 agent 循环之外直接调用，用于文本生成、分类等任务。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            2357,
+            2693
+          ],
+          "quote": "Models can be utilized in two ways:\n\n1. **With agents** - Models can be dynamically specified when creating an [agent](/oss/python/langchain/agents#model).\n2. **Standalone** - Models can be called directly (outside of the agent loop) for tasks like text generation, classification, or extraction without the need for an agent framework.",
+          "excerpt": "Models can be utilized in two ways: With agents - Models can be dynamically specified when creating an agent. Standalone - Models can be called directly (outside of the agent loop) for tasks like text generation, classification."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0034",
+      "question": "两种模型使用方式为何能平滑过渡？",
+      "answer": "同一模型接口在两种场景下都适用，使开发者可以从简单开始，再按需扩展到更复杂的 agent 工作流。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            2695,
+            2877
+          ],
+          "quote": "The same model interface works in both contexts, which gives you the flexibility to start simple and scale up to more complex agent-based workflows as needed.\n\n### Initialize a model",
+          "excerpt": "The same model interface works in both contexts, which gives you the flexibility to start simple and scale up to more complex agent-based workflows as needed."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0035",
+      "question": "如何最快地初始化一个独立模型？",
+      "answer": "使用 init_chat_model 从所选的 chat model 提供商初始化一个模型，这是上手独立模型最简单的方式。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            2855,
+            3137
+          ],
+          "quote": "### Initialize a model\n\nThe easiest way to get started with a standalone model in LangChain is to use [`init_chat_model`](https://reference.langchain.com/python/langchain/chat_models/base/init_chat_model) to initialize one from a chat model provider of your choice (examples below):",
+          "excerpt": "The easiest way to get started with a standalone model in LangChain is to use init_chat_model to initialize one from a chat model provider of your choice."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0036",
+      "question": "对 AI agent 而言 memory 为什么重要？",
+      "answer": "memory 是记住先前交互信息的系统，使 agent 能记住先前交互、从反馈中学习并适应用户偏好；随着任务变复杂，这一点尤为关键。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            181,
+            573
+          ],
+          "quote": "# Short-term memory\n\n## Overview\n\nMemory is a system that remembers information about previous interactions. For AI agents, memory is crucial because it lets them remember previous interactions, learn from feedback, and adapt to user preferences. As agents tackle more complex tasks with numerous user interactions, this capability becomes essential for both efficiency and user satisfaction.",
+          "excerpt": "Memory is a system that remembers information about previous interactions. For AI agents, memory is crucial because it lets them remember previous interactions, learn from feedback, and adapt to user preferences. As agents tackle more complex tasks, memory becomes essential."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0037",
+      "question": "short-term memory 的范围是什么？",
+      "answer": "short-term memory 让应用在单个 thread 或会话内记住先前的交互。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            575,
+            825
+          ],
+          "quote": "Short term memory lets your application remember previous interactions within a single thread or conversation.\n\n<Note>\n  A thread organizes multiple interactions in a session, similar to the way email groups messages in a single conversation.\n</Note>",
+          "excerpt": "Short term memory lets your application remember previous interactions within a single thread or conversation."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0038",
+      "question": "为什么长对话对 LLM 构成挑战？",
+      "answer": "对话历史是最常见的短期记忆形式；完整历史可能超出 LLM 上下文窗口，导致上下文丢失或错误。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            827,
+            1044
+          ],
+          "quote": "Conversation history is the most common form of short-term memory. Long conversations pose a challenge to today's LLMs; a full history may not fit inside an LLM's context window, resulting in a context loss or errors.",
+          "excerpt": "Conversation history is the most common form of short-term memory. Long conversations pose a challenge to today's LLMs; a full history may not fit inside an LLM's context window, resulting in a context loss or errors."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0039",
+      "question": "即使模型支持完整上下文长度，长上下文仍有什么问题？",
+      "answer": "大多数 LLM 在长上下文上表现仍差，会被陈旧或偏离主题的内容分散注意力，同时响应变慢、成本升高。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            1046,
+            1267
+          ],
+          "quote": "Even if your model supports the full context length, most LLMs still perform poorly over long contexts. They get \"distracted\" by stale or off-topic content, all while suffering from slower response times and higher costs.",
+          "excerpt": "Even if your model supports the full context length, most LLMs still perform poorly over long contexts. They get distracted by stale or off-topic content, all while suffering from slower response times and higher costs."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0040",
+      "question": "chat model 如何接收上下文？",
+      "answer": "chat model 通过 messages 接收上下文，messages 包含指令（system message）和输入（human messages），在聊天应用中交替出现并不断增长。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            1269,
+            1666
+          ],
+          "quote": "Chat models accept context using [messages](/oss/python/langchain/messages), which include instructions (a system message) and inputs (human messages). In chat applications, messages alternate between human inputs and model responses, resulting in a list of messages that grows longer over time. Because context windows are limited, many applications can benefit from using techniques to remove or",
+          "excerpt": "Chat models accept context using messages, which include instructions (a system message) and inputs (human messages). In chat applications, messages alternate between human inputs and model responses, resulting in a list of messages that grows longer over time."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0041",
+      "question": "如何为 agent 添加 short-term memory？",
+      "answer": "创建 agent 时指定一个 checkpointer，即可为 agent 添加线程级持久化的短期记忆。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            1929,
+            2312
+          ],
+          "quote": "## Usage\n\nTo add short-term memory (thread-level persistence) to an agent, you need to specify a `checkpointer` when creating an agent.\n\n<Info>\n  LangChain's agent manages short-term memory as a part of your agent's state.\n\n  By storing these in the graph's state, the agent can access the full context for a given conversation while maintaining separation between different threads.",
+          "excerpt": "To add short-term memory (thread-level persistence) to an agent, you need to specify a checkpointer when creating an agent."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0042",
+      "question": "checkpointer 在 short-term memory 中起什么作用？",
+      "answer": "state 通过 checkpointer 持久化到数据库或内存，使线程可在任意时刻恢复；短期记忆在 agent 调用或某步完成时更新，并在每步开始时读取。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            2316,
+            2578
+          ],
+          "quote": "State is persisted to a database (or memory) using a checkpointer so the thread can be resumed at any time.\n\n  Short-term memory updates when the agent is invoked or a step (like a tool call) is completed, and the state is read at the start of each step.\n</Info>",
+          "excerpt": "State is persisted to a database (or memory) using a checkpointer so the thread can be resumed at any time. Short-term memory updates when the agent is invoked or a step (like a tool call) is completed, and the state is read at the start of each step."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0043",
+      "question": "新应用推荐使用哪种流式 API？",
+      "answer": "推荐使用 event streaming——LangChain v1.3 引入的 typed-projection API，它为 messages、values、tool calls 等提供独立的迭代器。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            194,
+            585
+          ],
+          "quote": "> Stream real-time updates from agent runs\n\n<Tip>\n  For new applications, we recommend [event streaming](/oss/python/langchain/event-streaming)—the typed-projection API introduced in LangChain v1.3. Event streaming gives you separate iterators per projection (messages, values, tool calls, subgraphs) so you can consume them independently instead of branching on `stream_mode` chunks.\n</Tip>",
+          "excerpt": "For new applications, we recommend event streaming—the typed-projection API introduced in LangChain v1.3. Event streaming gives you separate iterators per projection (messages, values, tool calls)."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0044",
+      "question": "为什么 streaming 对 LLM 应用很重要？",
+      "answer": "LangChain 实现流式系统以浮现实时更新；通过在完整响应就绪前逐步显示输出，显著改善用户体验和响应性。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            587,
+            940
+          ],
+          "quote": "LangChain implements a streaming system to surface real-time updates.\n\nStreaming is crucial for enhancing the responsiveness of applications built on LLMs. By displaying output progressively, even before a complete response is ready, streaming significantly improves user experience (UX), particularly when dealing with the latency of LLMs.\n\n## Overview",
+          "excerpt": "LangChain implements a streaming system to surface real-time updates. Streaming is crucial for enhancing the responsiveness of applications built on LLMs. By displaying output progressively, even before a complete response is ready, streaming significantly improves user experience."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0045",
+      "question": "LangChain 流式系统能做什么？",
+      "answer": "让应用从 agent 运行中浮现实时反馈，包括 agent 进度、LLM token、推理 token、自定义更新以及多模式流式。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            929,
+            1081
+          ],
+          "quote": "## Overview\n\nLangChain's streaming system lets you surface live feedback from agent runs to your application.\n\nWhat's possible with LangChain streaming:",
+          "excerpt": "LangChain's streaming system lets you surface live feedback from agent runs to your application."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0046",
+      "question": "stream agent progress 与 stream LLM tokens 分别提供什么？",
+      "answer": "stream agent progress 在每个 agent 步骤后获取 state 更新；stream LLM tokens 在语言模型生成时流式输出 token。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            1083,
+            1325
+          ],
+          "quote": "* <Icon icon=\"brain\" size={16} /> [**Stream agent progress**](#agent-progress)—get state updates after each agent step.\n* <Icon icon=\"binary\" size={16} /> [**Stream LLM tokens**](#llm-tokens)—stream language model tokens as they're generated.",
+          "excerpt": "Stream agent progress—get state updates after each agent step. Stream LLM tokens—stream language model tokens as they're generated."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0047",
+      "question": "streaming 支持哪些自定义与推理流式能力？",
+      "answer": "可流式 thinking/reasoning token 以浮现模型推理过程，也可流式 custom updates 发送用户自定义信号（如 'Fetched 10 results'）。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            1326,
+            1623
+          ],
+          "quote": "* <Icon icon=\"bulb\" size={16} /> [**Stream thinking / reasoning tokens**](#streaming-thinking-/-reasoning-tokens)—surface model reasoning as it's generated.\n* <Icon icon=\"table\" size={16} /> [**Stream custom updates**](#custom-updates)—emit user-defined signals (e.g., `\"Fetched 10/100 records\"`).",
+          "excerpt": "Stream thinking/reasoning tokens—surface model reasoning as it's generated. Stream custom updates—emit user-defined signals (e.g., Fetched 10 results)."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0048",
+      "question": "streaming 的多模式如何选择？",
+      "answer": "可从 updates（agent 进度）、messages（LLM token 加元数据）或 custom（任意用户数据）中选择一个或多个流模式。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            1624,
+            1825
+          ],
+          "quote": "* <Icon icon=\"stack-push\" size={16} /> [**Stream multiple modes**](#stream-multiple-modes)—choose from `updates` (agent progress), `messages` (LLM tokens + metadata), or `custom` (arbitrary user data).",
+          "excerpt": "Stream multiple modes—choose from updates (agent progress), messages (LLM tokens + metadata), or custom (arbitrary user data)."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0049",
+      "question": "updates 与 messages 两种流模式分别输出什么？",
+      "answer": "updates 在每个 agent 步骤后流式输出 state 更新（同一步内多次更新分别流式）；messages 从任何调用 LLM 的图节点流式输出 (token, metadata) 元组。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            2620,
+            2977
+          ],
+          "quote": "| `updates`  | Streams state updates after each agent step. If multiple updates are made in the same step (e.g., multiple nodes are run), those updates are streamed separately. |\n| `messages` | Streams tuples of `(token, metadata)` from any graph nodes where an LLM is invoked.                                                                               |",
+          "excerpt": "updates: Streams state updates after each agent step. If multiple updates are made in the same step, those updates are streamed separately. messages: Streams tuples of (token, metadata) from any graph nodes where an LLM is invoked."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0050",
+      "question": "structured output 解决什么问题？",
+      "answer": "让 agent 以特定、可预测的格式返回数据，无需解析自然语言响应，而是以 JSON 对象、Pydantic 模型等形式获得结构化数据。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            181,
+            526
+          ],
+          "quote": "# Structured output\n\nStructured output allows agents to return data in a specific, predictable format. Instead of parsing natural language responses, you get structured data in the form of JSON objects, [Pydantic models](https://docs.pydantic.dev/latest/concepts/models/#basic-model-usage), or dataclasses that your application can use directly.",
+          "excerpt": "Structured output allows agents to return data in a specific, predictable format. Instead of parsing natural language responses, you get structured data in the form of JSON objects, Pydantic models."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0051",
+      "question": "create_agent 如何处理 structured output？",
+      "answer": "create_agent 自动处理结构化输出：用户设定期望的 schema，模型生成结构化数据后会被捕获、校验并以结构化形式返回。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            761,
+            1108
+          ],
+          "quote": "LangChain's [`create_agent`](https://reference.langchain.com/python/langchain/agents/factory/create_agent) handles structured output automatically. The user sets their desired structured output schema, and when the model generates the structured data, it's captured, validated, and returned in the `'structured_response'` key of the agent's state.",
+          "excerpt": "LangChain's create_agent handles structured output automatically. The user sets their desired structured output schema, and when the model generates the structured data, it's captured, validated, and returned in a structured form."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0052",
+      "question": "structured output 有哪些策略类型？",
+      "answer": "ToolStrategy 使用工具调用实现结构化输出；ProviderStrategy 使用提供商原生结构化输出；直接传 type 则根据模型能力自动选择最佳策略。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            1490,
+            1828
+          ],
+          "quote": "* **`ToolStrategy[StructuredResponseT]`**: Uses tool calling for structured output\n* **`ProviderStrategy[StructuredResponseT]`**: Uses provider-native structured output\n* **`type[StructuredResponseT]`**: Schema type - automatically selects best strategy based on model capabilities\n* **`None`**: Structured output not explicitly requested",
+          "excerpt": "ToolStrategy[StructuredResponseT]: Uses tool calling for structured output. ProviderStrategy[StructuredResponseT]: Uses provider-native structured output. type[StructuredResponseT]: Schema type - automatically selects best strategy based on model capabilities."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0053",
+      "question": "直接传入 schema type 时 LangChain 如何选择策略？",
+      "answer": "若模型与提供商支持原生结构化输出则选 ProviderStrategy（如 OpenAI、Anthropic Claude），否则回退到其他策略。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            1830,
+            2216
+          ],
+          "quote": "When a schema type is provided directly, LangChain automatically chooses:\n\n* `ProviderStrategy` if the model and provider chosen supports native structured output (e.g. [OpenAI](/oss/python/integrations/providers/openai), [Anthropic (Claude)](/oss/python/integrations/providers/anthropic), or [xAI (Grok)](/oss/python/integrations/providers/xai)).\n* `ToolStrategy` for all other models.",
+          "excerpt": "When a schema type is provided directly, LangChain automatically chooses: ProviderStrategy if the model and provider chosen supports native structured output (e.g. OpenAI, Anthropic (Claude))."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0054",
+      "question": "结构化响应在 agent 最终状态中的位置是什么？",
+      "answer": "结构化响应返回在 agent 最终状态的 structured_response 键中。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            2792,
+            3145
+          ],
+          "quote": "The structured response is returned in the `structured_response` key of the agent's final state.\n\n## Provider strategy\n\nSome model providers support structured output natively through their APIs (e.g. OpenAI, xAI (Grok), Gemini, Anthropic (Claude)). This is the most reliable method when available.\n\nTo use this strategy, configure a `ProviderStrategy`:",
+          "excerpt": "The structured response is returned in the structured_response key of the agent's final state."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0055",
+      "question": "Provider strategy 为什么是最可靠的方法？",
+      "answer": "因为部分模型提供商（如 OpenAI、xAI、Gemini、Anthropic）通过其 API 原生支持结构化输出，这是最可靠的方法。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            528,
+            759
+          ],
+          "quote": "<Tip>\n  This page covers structured output with agents using `create_agent`. To use structured output directly on a model (outside of agents), see [Models - Structured output](/oss/python/langchain/models#structured-output).\n</Tip>",
+          "excerpt": "Some model providers support structured output natively through their APIs (e.g. OpenAI, xAI (Grok), Gemini, Anthropic (Claude)). This is the most reliable method."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0056",
+      "question": "structured output 的 schema 支持哪些类型？",
+      "answer": "支持 Pydantic models（返回校验过的实例）、Dataclasses（返回 dict）、TypedDict（返回 dict）以及 JSON Schema（字典）。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            3497,
+            3885
+          ],
+          "quote": "* **Pydantic models**: `BaseModel` subclasses with field validation. Returns validated Pydantic instance.\n  * **Dataclasses**: Python dataclasses with type annotations. Returns dict.\n  * **TypedDict**: Typed dictionary classes. Returns dict.\n  * **JSON Schema**: Dictionary with JSON schema specification. Must include top-level `title` and `description` keys. Returns dict.\n</ParamField>",
+          "excerpt": "Pydantic models: BaseModel subclasses with field validation. Returns validated Pydantic instance. Dataclasses: Python dataclasses with type annotations. Returns dict. TypedDict: Typed dictionary classes. Returns dict. JSON Schema: Dictionary."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0057",
+      "question": "strict 参数的作用是什么？",
+      "answer": "strict 是可选布尔参数，用于启用严格 schema 遵从；部分提供商（如 OpenAI 和 xAI）支持，默认为 None（禁用）。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            3887,
+            4151
+          ],
+          "quote": "<ParamField path=\"strict\">\n  Optional boolean parameter to enable strict schema adherence. Supported by some providers (e.g., [OpenAI](/oss/python/integrations/chat/openai) and [xAI](/oss/python/integrations/chat/xai)). Defaults to `None` (disabled).\n</ParamField>",
+          "excerpt": "strict: Optional boolean parameter to enable strict schema adherence. Supported by some providers (e.g., OpenAI and xAI). Defaults to None (disabled)."
+        }
+      ],
+      "metadata": {
+        "category": "configuration",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0058",
+      "question": "Tools 为 agent 扩展了什么能力？",
+      "answer": "Tools 扩展了 agent 的能力，使其能获取实时数据、执行代码、查询外部数据库并在世界中采取行动。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Tools.md",
+          "span": [
+            0,
+            359
+          ],
+          "quote": "> ## Documentation Index\n> Fetch the complete documentation index at: https://docs.langchain.com/llms.txt\n> Use this file to discover all available pages before exploring further.\n\n# Tools\n\nTools extend what [agents](/oss/python/langchain/agents) can do—letting them fetch real-time data, execute code, query external databases, and take actions in the world.",
+          "excerpt": "Tools extend what agents can do—letting them fetch real-time data, execute code, query external databases, and take actions in the world."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0059",
+      "question": "tool 在底层是如何工作的？",
+      "answer": "tool 是具有明确输入输出的可调用函数，被传给 chat model；模型根据对话上下文决定何时调用工具以及提供什么输入参数。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Tools.md",
+          "span": [
+            361,
+            619
+          ],
+          "quote": "Under the hood, tools are callable functions with well-defined inputs and outputs that get passed to a [chat model](/oss/python/langchain/models). The model decides when to invoke a tool based on the conversation context, and what input arguments to provide.",
+          "excerpt": "Under the hood, tools are callable functions with well-defined inputs and outputs that get passed to a chat model. The model decides when to invoke a tool based on the conversation context, and what input arguments to provide."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0060",
+      "question": "创建 tool 最简单的方式是什么？",
+      "answer": "使用 @tool 装饰器；默认情况下函数的 docstring 会成为工具描述，帮助模型理解何时及如何使用该工具。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Tools.md",
+          "span": [
+            1136,
+            1436
+          ],
+          "quote": "## Create tools\n\n### Basic tool definition\n\nThe simplest way to create a tool is with the [`@tool`](https://reference.langchain.com/python/langchain-core/tools/convert/tool) decorator. By default, the function's docstring becomes the tool's description that helps the model understand when to use it:",
+          "excerpt": "The simplest way to create a tool is with the @tool decorator. By default, the function's docstring becomes the tool's description that helps the model understand when and how to use the tool."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0061",
+      "question": "tool 命名应遵循什么规范，为什么？",
+      "answer": "推荐使用 snake_case（如 web_search 而非 Web Search）；某些模型提供商会因名称含空格或特殊字符而出现问题或拒绝，使用字母数字、下划线和连字符有助于提升兼容性。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Tools.md",
+          "span": [
+            2225,
+            2600
+          ],
+          "quote": "<Warning>\n  Prefer `snake_case` for tool names (e.g., `web_search` instead of `Web Search`). Some model providers have issues with or reject names containing spaces or special characters with errors. Sticking to alphanumeric characters, underscores, and hyphens helps to improve compatibility across providers.\n</Warning>\n\n### Customize tool properties\n\n#### Custom tool name",
+          "excerpt": "Prefer snake_case for tool names (e.g., web_search instead of Web Search). Some model providers have issues with or reject names containing spaces or special characters with errors. Sticking to alphanumeric characters, underscores, and hyphens helps to improve compatibility."
+        }
+      ],
+      "metadata": {
+        "category": "configuration",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0062",
+      "question": "tool 参数有哪些保留名？",
+      "answer": "有些参数名是保留的，不能用作工具参数，使用这些名称会导致运行时错误。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Tools.md",
+          "span": [
+            5261,
+            5415
+          ],
+          "quote": "### Reserved argument names\n\nThe following parameter names are reserved and cannot be used as tool arguments. Using these names will cause runtime errors.",
+          "excerpt": "The following parameter names are reserved and cannot be used as tool arguments. Using these names will cause runtime errors."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0063",
+      "question": "如何在 tool 中访问运行时信息？",
+      "answer": "使用 ToolRuntime 参数来访问运行时信息，而不是把自定义参数命名为 config 或 runtime。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Tools.md",
+          "span": [
+            5786,
+            6168
+          ],
+          "quote": "To access runtime information, use the [`ToolRuntime`](https://reference.langchain.com/python/langchain/tools/#langchain.tools.ToolRuntime) parameter instead of naming your own arguments `config` or `runtime`.\n\nIf you use `InjectedState`, `InjectedStore`, `get_runtime()`, or `InjectedToolCallId`, see [Migrate from older injection patterns](#migrate-from-older-injection-patterns).",
+          "excerpt": "To access runtime information, use the ToolRuntime parameter instead of naming your own arguments config or runtime."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0064",
+      "question": "Message 的 metadata 字段包含什么？",
+      "answer": "metadata 是可选字段，包含响应信息、消息 ID 和 token 使用量等。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Messages.md",
+          "span": [
+            736,
+            878
+          ],
+          "quote": "* <Icon icon=\"tag\" size={16} /> [**Metadata**](#message-metadata) - Optional fields such as response information, message IDs, and token usage",
+          "excerpt": "Metadata - Optional fields such as response information, message IDs, and token usage."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0065",
+      "question": "Message 由哪两个核心维度构成？",
+      "answer": "Role 标识消息类型（如 system、user），Content 表示消息的实际内容（如文本、图像、音频、文档等）。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Messages.md",
+          "span": [
+            464,
+            735
+          ],
+          "quote": "* <Icon icon=\"user\" size={16} /> [**Role**](#message-types) - Identifies the message type (e.g. `system`, `user`)\n* <Icon icon=\"folder\" size={16} /> [**Content**](#message-content) - Represents the actual content of the message (like text, images, audio, documents, etc.)",
+          "excerpt": "Role - Identifies the message type (e.g. system, user). Content - Represents the actual content of the message (like text, images, audio, documents, etc.)."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "easy"
+      }
+    },
+    {
+      "id": "lc_0066",
+      "question": "LangSmith 在模型调用层面提供什么能力？",
+      "answer": "LangSmith 追踪每次模型调用，使开发者能比较提供商、检查 tool 路由并调试失败。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Models.md",
+          "span": [
+            1844,
+            2198
+          ],
+          "quote": "For provider-specific integration information and capabilities, see the provider's [chat model page](/oss/python/integrations/chat).\n\n<Tip>\n  [LangSmith](/langsmith/observability) traces each model call so you can compare providers, inspect tool routing, and debug failures. Follow the [tracing quickstart](/langsmith/trace-with-langchain) to get set up.",
+          "excerpt": "LangSmith traces each model call so you can compare providers, inspect tool routing, and debug failures."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0067",
+      "question": "什么是 server-side tool use？",
+      "answer": "部分 chat model 内置工具（如网页搜索、代码解释器），这些工具在服务端执行，称为 server-side tool use。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Tools.md",
+          "span": [
+            2015,
+            2223
+          ],
+          "quote": "<Note>\n  **Server-side tool use:** Some chat models feature built-in tools (web search, code interpreters) that are executed server-side. See [Server-side tool use](#server-side-tool-use) for details.\n</Note>",
+          "excerpt": "Server-side tool use: Some chat models feature built-in tools (web search, code interpreters) that are executed server-side."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0068",
+      "question": "如何流式获取 agent 进度？",
+      "answer": "使用 stream 或 astream 方法，并配合 updates 流模式来在每个 agent 步骤后获取状态更新。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Streaming.md",
+          "span": [
+            3158,
+            3531
+          ],
+          "quote": "## Agent progress\n\nTo stream agent progress, use the [`stream`](https://reference.langchain.com/python/langgraph/graphs/#langgraph.graph.state.CompiledStateGraph.stream) or [`astream`](https://reference.langchain.com/python/langgraph/graphs/#langgraph.graph.state.CompiledStateGraph.astream) methods with `stream_mode=\"updates\"`. This emits an event after every agent step.",
+          "excerpt": "To stream agent progress, use the stream or astream method with the updates stream mode to get state updates after each agent step."
+        }
+      ],
+      "metadata": {
+        "category": "usage",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0069",
+      "question": "native structured output 支持信息从哪里读取？",
+      "answer": "若使用 langchain>=1.1，原生结构化输出的支持信息会从模型的 profile data 中动态读取；若数据不可用，则需用其他条件判断或手动指定。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Structured output.md",
+          "span": [
+            2218,
+            2466
+          ],
+          "quote": "<Note>\n  Support for native structured output features is read dynamically from the model's [profile data](/oss/python/langchain/models#model-profiles) if using `langchain>=1.1`. If data are not available, use another condition or specify manually:",
+          "excerpt": "Support for native structured output features is read dynamically from the model's profile data if using langchain>=1.1. If data are not available, use another condition or specify manually."
+        }
+      ],
+      "metadata": {
+        "category": "configuration",
+        "difficulty": "hard"
+      }
+    },
+    {
+      "id": "lc_0070",
+      "question": "如何跨会话记忆信息？",
+      "answer": "使用 long-term memory，可在不同线程和会话之间存储并回忆用户特定或应用层级的数据。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Short-term memory.md",
+          "span": [
+            1696,
+            1937
+          ],
+          "quote": "<Tip>\n  Need to remember information **across** conversations? Use [long-term memory](/oss/python/langchain/long-term-memory) to store and recall user-specific or application-level data across different threads and sessions.\n</Tip>\n\n## Usage",
+          "excerpt": "Need to remember information across conversations? Use long-term memory to store and recall user-specific or application-level data across different threads and sessions."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "medium"
+      }
+    },
+    {
+      "id": "lc_0071",
+      "question": "命名 sub-agent 在流式中如何浮现？",
+      "answer": "命名 sub-agent 在专用的 stream.subagents 投影上浮现，每个句柄暴露内部 agent 自身的 .messages、.values、.tool_calls 和 .output，以及 .name 和 .cause。",
+      "gold": [
+        {
+          "source": "langchain_doc\\Core components\\Event streaming.md",
+          "span": [
+            5371,
+            5735
+          ],
+          "quote": "Named sub-agents surface on the dedicated `stream.subagents` projection. Each handle exposes the inner agent's own `.messages`, `.values`, `.tool_calls`, and `.output`, plus `.name` (the `name=` you passed) and `.cause` (the tool call that dispatched the sub-agent). Because only named `create_agent` runs appear here, you don't need to filter plain subgraphs out.",
+          "excerpt": "Named sub-agents surface on the dedicated stream.subagents projection. Each handle exposes the inner agent's own .messages, .values, .tool_calls, and .output, plus .name (the name= you passed) and .cause (the tool call that dispatched the sub-agent)."
+        }
+      ],
+      "metadata": {
+        "category": "concept",
+        "difficulty": "hard"
+      }
+    }
+  ]
+}

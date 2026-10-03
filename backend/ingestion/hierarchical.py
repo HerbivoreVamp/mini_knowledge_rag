@@ -19,15 +19,24 @@ def ingest_documents(docs, vectorstore, parent_store: SqliteDocStore, child_stor
 
         parent_id = str(uuid.uuid4())
         parent.metadata["parent_id"] = parent_id
+        # 统一语义: file_start_index 永远是"在源文档里的字符偏移"
+        # (parent 的 start_index 本来就是文件内偏移, 这里给它一个统一的字段名)
+        parent.metadata["file_start_index"] = parent.metadata.get("start_index") or 0
 
         children = child_splitter.split_documents(
             [parent]
         )
 
         for child in children:
-            chunk_id = create_chunk_id(child)
-            child.metadata["chunk_id"] = chunk_id
+            # 先补 parent_id: create_chunk_id 依赖它来避免 id 碰撞
             child.metadata["parent_id"] = parent_id
+            child.metadata["chunk_id"] = create_chunk_id(child)
+            # child 的 start_index 是相对 parent 的, 加上 parent 的文件内偏移
+            # 才是它在源文档里的真实位置(评测锚点、日志排查都用这个)
+            child.metadata["file_start_index"] = (
+                    parent.metadata["file_start_index"]
+                    + (child.metadata.get("start_index") or 0)
+            )
 
         child_docs.extend(children)
 
